@@ -31,6 +31,9 @@ body {
     overflow: hidden;
     transition: max-height 0.5s ease, opacity 0.5s ease;
   }
+  .bg-custom-faq{
+    background-image: url('../app/public/img/faq.png');
+  }
 }
 @layer base {
   ::marker {
