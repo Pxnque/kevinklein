@@ -27,4 +27,10 @@ body {
   .navbar-gradient {
     background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 100%);
   }
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+  .bg-custom-logreg{
+    background-image: url('../app/public/img/logreg.png');
+  }
 }
