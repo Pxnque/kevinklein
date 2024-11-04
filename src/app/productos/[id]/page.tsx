@@ -1,6 +1,11 @@
 "use client";
-import React, { useState } from 'react'
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react'
 import { FaHeart } from "react-icons/fa";
+import hombre1 from '../hombre1.png';
+import hombre2 from '../hombre2.png';
+import hombre3 from '../hombre3.png';
+import hombre4 from '../hombre4.png';
 
 interface FAQItem {
     question: string;
@@ -16,16 +21,43 @@ const page = () => {
       );
     
     };
-    const [mainImage, setMainImage] = useState<string>("https://via.placeholder.com/500");
+    const maria = hombre1;
+    const [mainImage, setMainImage] = useState<typeof hombre1>(maria);
+    const [visibleThumbnails, setVisibleThumbnails] = useState<number>(5);
+    useEffect(() => {
+      const updateVisibleThumbnails = () => {
+          if (window.innerWidth >= 1516) {
+              setVisibleThumbnails(5); 
+          } else if (window.innerWidth > 768) {
+              setVisibleThumbnails(4); 
+          } else{
+              setVisibleThumbnails(4); 
+          }
+      };
 
-    // Thumbnail images
+      updateVisibleThumbnails();
+      window.addEventListener('resize', updateVisibleThumbnails);
+
+      return () => {
+          window.removeEventListener('resize', updateVisibleThumbnails);
+      };
+  }, []);
+
+    
     const thumbnails: string[] = [
-        "https://via.placeholder.com/500", // Thumbnail 1
-        "https://via.placeholder.com/100", // Thumbnail 2
-        "https://via.placeholder.com/200", // Thumbnail 3
-        "https://via.placeholder.com/300", // Thumbnail 4
-        "https://via.placeholder.com/400"  // Thumbnail 5
+        "/img/hombre1.png", 
+        "/img/hombre2.png", 
+        "/img/hombre3.png", 
+        "/img/hombre4.png", 
+        "/img/hombre1.png"  
     ];
+    const Miniatura =[
+      {id:1, img:hombre1},
+      {id:2, img:hombre2},
+      {id:3, img:hombre3},
+      {id:4, img:hombre4},
+      {id:5, img:hombre1}
+    ]
     const faqData: FAQItem[] = [
         {
           question: "Descripción",
@@ -60,21 +92,23 @@ const page = () => {
     <>
             <div className="container mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-full">
                 <div className="aspect-w-1 aspect-h-1">
-                    <img src={mainImage} alt="Product Image" className="w-full h-1/4 object-cover rounded-lg" />
+                    <Image src={mainImage} alt="Product Image" className="w-full h-1/4 object-cover rounded-lg" />
                 </div>
                 
-                <div className="flex space-x-6">
-                {thumbnails.map((thumbnail, index) => (
-                    <img
-                        key={index}
-                        src={thumbnail}
-                        alt={`Thumbnail ${index + 1}`}
-                        onClick={() => setMainImage(thumbnail)} // Set main image when thumbnail is clicked
-                        className={`lg:w-25 lg:h-32 object-cover rounded-lg cursor-pointer ${mainImage === thumbnail ? 'border-2 border-blue-600' : ''}`}
-                    />
-                ))}
+                <div className="flex sm:space-x-10 md:space-x-7 xl:space-x-10 2xl:space-x-6 w-full">
+                {Miniatura.slice(0, visibleThumbnails).map((thumbnail, index) => (
+                        <Image
+                            key={index}
+                            src={thumbnail.img}
+                            alt={`Thumbnail ${index + 1}`}
+                            width={200}
+                            height={200}
+                            onClick={() => setMainImage(thumbnail.img)}
+                            className={`sm:w-1/5 md:w-1/5 lg:w-25 lg:h-32 object-cover rounded-lg cursor-pointer ${mainImage === thumbnail ? 'border-2 border-blue-600' : ''}`}
+                        />
+                    ))} 
                 </div>
             </div>
 
