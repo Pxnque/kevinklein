@@ -21,7 +21,7 @@ const Navbar = () => {
                         <a className="hover:text-gray-200" href="#">INICIO</a>
                     </li>
                     <li>
-                        <a className="hover:text-gray-200" href="#">HOMBRE</a>
+                        <a className="hover:text-gray-200" href="/hombre">HOMBRE</a>
                     </li>
                     <li>
                         <a className="hover:text-gray-200" href="#">MUJER</a>
