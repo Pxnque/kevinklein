@@ -35,7 +35,8 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-6">
             <IoSearchSharp size={20} className='text-white'/>
-            <IoPersonOutline size={20} className='text-white'/>
+            <a href="/auth/Login"><IoPersonOutline size={20} className='text-white'/></a>
+            
             <a href="/ShoppingCart"><IoCartOutline size={20} className='text-white'/></a>
           </div>
         </nav>
