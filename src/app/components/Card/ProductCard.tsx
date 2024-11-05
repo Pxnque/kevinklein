@@ -1,38 +1,55 @@
 import React from 'react';
-import Image from 'next/image'; // Importa el componente Image de Next.js
-import img1 from './model.png';
+import Image from 'next/image';
+import { FaShoppingCart, FaHeart, FaEye, FaExchangeAlt } from 'react-icons/fa';
+import imgCard from '@/app/public/img/glasses.png';
 
 const ProductCard = () => {
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
-      <Image className="w-full" src={img1} alt="Product Image" />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">Nombre de Prenda</div>
-        <div className="flex items-center space-x-1">
-          {Array(5).fill('hola').map((_, i) => (
-            <svg key={i} className="w-4 h-4 fill-current text-yellow-500" viewBox="0 0 24 24">
-              <path d="M12 .587l3.668 7.568L24 9.423l-6 5.847 1.417 8.253L12 18.897l-7.417 4.626L6 15.27 0 9.423l8.332-1.268z" />
-            </svg>
-          ))}
-        </div>
-        <p className="text-gray-700 text-base">$200 MXN</p>
+    <div className="flex border rounded-lg overflow-hidden shadow-lg bg-white max-w-xl">
+      {/* Imagen del producto */}
+      <div className="w-1/2 relative">
+        <Image 
+          src={imgCard}
+          alt="Product Image"
+          layout="fill"
+          objectFit="cover"
+          className="rounded-l-lg"
+        />
       </div>
-      <div className="px-6 pt-4 pb-2 flex justify-between">
-        <button className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          <svg className="w-4 h-4 inline-block" viewBox="0 0 24 24">
-            <path d="M7 4V2h10v2h5v2H2V4h5zm0 4h10v14H7V8zm2 2v10h6V10H9z" />
-          </svg>
-        </button>
-        <button className="bg-red-200 rounded-full px-3 py-1 text-sm font-semibold text-red-700 mr-2 mb-2">
-          <svg className="w-4 h-4 inline-block" viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </button>
-        <button className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-          <svg className="w-4 h-4 inline-block" viewBox="0 0 24 24">
-            <path d="M12 4.5C7.305 4.5 3.5 8.305 3.5 13S7.305 21.5 12 21.5 20.5 17.695 20.5 13 16.695 4.5 12 4.5zm0 15c-3.038 0-5.5-2.462-5.5-5.5S8.962 8.5 12 8.5s5.5 2.462 5.5 5.5-2.462 5.5-5.5 5.5z" />
-          </svg>
-        </button>
+
+      {/* Información del producto */}
+      <div className="w-1/2 p-4 flex flex-col justify-between">
+        {/* Nombre y calificación */}
+        <div>
+          <h2 className="text-black text-xl font-medium mb-2">Nombre de Prenda</h2>
+          <div className="flex items-center space-x-1 text-black mb-4">
+            {Array(5).fill(null).map((_, i) => (
+              <svg key={i} className="w-4 h-4 fill-current text-black" viewBox="0 0 24 24">
+                <path d="M12 .587l3.668 7.568L24 9.423l-6 5.847 1.417 8.253L12 18.897l-7.417 4.626L6 15.27 0 9.423l8.332-1.268z" />
+              </svg>
+            ))}
+          </div>
+          {/* Precio */}
+          <p className="text-2xl font-bold text-black mb-4">$200 MXN</p>
+          <hr className="border-black mb-2" />
+          <hr className="mt-8 border-black mb-2" />
+        </div>
+
+        {/* Botones de acción */}
+        <div className="flex justify-between mt-4">
+          <button className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
+            <FaShoppingCart href='/ShoppingCart'/>
+          </button>
+          <button className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded transition duration-300 border border-black">
+            <FaHeart />
+          </button>
+          <button className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
+            <FaEye />
+          </button>
+          <button className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
+            <FaExchangeAlt />
+          </button>
+        </div>
       </div>
     </div>
   );

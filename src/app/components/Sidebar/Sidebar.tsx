@@ -1,10 +1,12 @@
 // components/Sidebar.tsx
 import React from 'react';
-import ProductCard from '../Card/ProductCard';
+import ProductCardDiscount from '../CardDiscount/ProductCardDiscount';
+import { FaArrowDown, FaSortDown, FaSort, FaAngleDown } from 'react-icons/fa';
+
 
 const Sidebar = () => {
     return (
-        <aside className="text-black w-64 p-4 bg-gray-100 border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
+        <aside className="text-black w-72 p-4 bg-gray-100 border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
             {/* Search Bar */}
             <div className="relative mb-4">
                 <input
@@ -29,7 +31,7 @@ const Sidebar = () => {
 
             {/* Categorías */}
             <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Categorías</h3>
+                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center"><input type="checkbox" id="playeras" className="mr-2" /><label htmlFor="playeras">Playeras</label></li>
                     <li className="flex items-center"><input type="checkbox" id="camisas" className="mr-2" /><label htmlFor="camisas">Camisas</label></li>
@@ -45,10 +47,11 @@ const Sidebar = () => {
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
+            <hr className="border-gray-400 my-2" />
 
             {/* Precio */}
             <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Precio</h3>
+                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
                         <input type="checkbox" id="menos50" className="mr-2" />
@@ -69,10 +72,11 @@ const Sidebar = () => {
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
+            <hr className="border-gray-400 my-2" />
 
             {/* Calificación */}
             <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Calificación</h3>
+                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
                 <ul className="mt-2 space-y-2">
                     {[5, 4, 3, 2, 1].map((rating) => (
                         <li key={rating} className="flex items-center">
@@ -90,10 +94,11 @@ const Sidebar = () => {
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
+            <hr className="border-gray-400 my-2" />
 
             {/* Color */}
             <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Color</h3>
+                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
                         <input type="checkbox" id="blanco" className="mr-2" />
@@ -140,10 +145,11 @@ const Sidebar = () => {
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
+            <hr className="border-gray-400 my-2" />
 
             {/* Populares */}
             <div className="space-y-4">
-                <h2 className="text-2xl font-bold mb-4">Populares</h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
                 <ul className="mb-8 flex flex-wrap gap-2">
                     {['Top', 'Fashion', 'Hombre', 'Colección', 'Colección de hombre', 'Nuevo', 'Ropa', 'Lo mejor', 'Galería', 'Ropa de hombre'].map((item, index) => (
                         <li key={index}>
@@ -154,15 +160,15 @@ const Sidebar = () => {
                     ))}
                 </ul>
             </div>
-
+            <hr className="border-gray-400 my-2" />
 
             {/* Productos nuevos */}
             <div className="space-y-4">
-                <h2 className="text-2xl font-bold mb-4">Productos nuevos</h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Productos nuevos <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
                 <div className="space-y-4">
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
+                    <ProductCardDiscount />
+                    <ProductCardDiscount />
+                    <ProductCardDiscount />
                 </div>
                 <button className="mt-4 text-blue-500 hover:underline">Mostrar más</button>
             </div>
