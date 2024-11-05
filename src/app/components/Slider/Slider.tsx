@@ -28,8 +28,8 @@ export default function Slider() {
   };
 
   return (
-    <div className="py-10">
-      <h2 className="text-center text-2xl font-bold mb-6">NOVEDADES</h2>
+    <div className="bg-white py-10"> {/* Fondo blanco aplicado al componente */}
+      <h2 className="text-center text-2xl font-bold mb-6 text-black">NOVEDADES</h2>
       <div className="relative flex items-center">
         <button
           onClick={prevSlide}
