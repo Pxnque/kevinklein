@@ -3,11 +3,12 @@ import Link from 'next/link';
 import React from 'react';
 import ImagenLogin from '@/app/public/img/logo.png';
 import { IoPersonOutline, IoSearchSharp, IoCartOutline } from "react-icons/io5";
-
+//navbar gradient
 const Navbar = () => {
   return (
-    <>
-      <header className="navbar-gradient">
+    <> 
+    
+      <header className=" bg-black">
         <nav className="flex justify-between items-center w-[92%] mx-auto">
           <div>
             <Image src={ImagenLogin} alt='logo' className='w-16 cursor-pointer'/>

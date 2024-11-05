@@ -38,7 +38,7 @@ const ImageSlider = () => {
 
   return (
     <div className="flex justify-center my-8">
-      <div className="flex space-x-4 overflow-hidden" style={{ width: '80%' }}>
+      <div className="flex space-x-1 overflow-hidden" style={{ width: '80%' }}>
         {visibleImages.map((image, index) => (
           <div
             key={index}
@@ -49,7 +49,7 @@ const ImageSlider = () => {
               alt={`Slide ${index + 1}`}
               layout="fill"
               objectFit="cover"
-              className="rounded-md border-2 border-cyan-900"
+              className="rounded-md"
             />
           </div>
         ))}

@@ -35,11 +35,16 @@ export default function Home() {
           <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 font-montserrat">
             Conoce Más
           </button>
+          
         </div>
+    
       </div>
-
+      <ImageSlider />
       {/* Componente del slider */}
       <Slider />
+      <br />
+      
+      <br />
       
 <div className="max-w-7xl mx-auto py-10 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
   
