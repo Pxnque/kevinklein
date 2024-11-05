@@ -19,7 +19,7 @@ export default function Home() {
       <Navbar />
       <br />
       <br />
-      {/* <ProductCard /> */}
+      <ProductCard />
       <br />
       <ImageSlider />
       <br />
