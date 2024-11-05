@@ -54,9 +54,9 @@ const Footer = () => {
     <div className="w-full sm:w-1/2 md:w-1/4 mb-8 border-r border-gray-700">
       <h3 className="text-xl font-bold mb-4 border-b border-gray-700">Links</h3>
       <ul className="space-y-2 pl-6">
-        <li><a href="#" className="hover:text-gray-400 font-bold">Nosotros</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">¡Compra Ahora!</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">FAQ's</a></li>
+        <li><a href="/preguntar-frecuentes" className="hover:text-gray-400 font-bold">Nosotros</a></li>
+        <li><a href="/Homepage" className="hover:text-gray-400 font-bold">¡Compra Ahora!</a></li>
+        <li><a href="/preguntar-frecuentes" className="hover:text-gray-400 font-bold">FAQ's</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Contáctanos</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Servicio al Cliente</a></li>
       </ul>
@@ -67,8 +67,8 @@ const Footer = () => {
       <h3 className="text-xl font-bold mb-4 border-b border-gray-700">Servicio Al Cliente</h3>
       <ul className="space-y-2 pl-6">
         <li><a href="#" className="hover:text-gray-400 font-bold">Mi Cuenta</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">Carrito</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">FAQ's</a></li>
+        <li><a href="/ShoppingCart" className="hover:text-gray-400 font-bold">Carrito</a></li>
+        <li><a href="/preguntar-frecuentes" className="hover:text-gray-400 font-bold">FAQ's</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Seguimiento de Orden</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Ayuda & Soporte</a></li>
       </ul>
