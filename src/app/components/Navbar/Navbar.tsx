@@ -22,10 +22,10 @@ const Navbar = () => {
                 <Link href="/Homepage" className="hover:text-gray-200">HOMBRE</Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-gray-200">MUJER</Link>
+                <Link href="/Homepage" className="hover:text-gray-200">MUJER</Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-gray-200">NOSOTROS</Link>
+                <Link href="/preguntar-frecuentes" className="hover:text-gray-200">NOSOTROS</Link>
               </li>
             </ul>
           </div>
