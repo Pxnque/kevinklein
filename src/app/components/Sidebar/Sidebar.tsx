@@ -6,7 +6,7 @@ import { FaArrowDown, FaSortDown, FaSort, FaAngleDown } from 'react-icons/fa';
 
 const Sidebar = () => {
     return (
-        <aside className="text-black w-72 p-4 bg-gray-100 border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
+        <aside className="w-full p-4 bg-white shadow-md text-black  border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
             {/* Search Bar */}
             <div className="relative mb-4">
                 <input

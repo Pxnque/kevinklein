@@ -6,6 +6,7 @@ import ProductList from '../components/ProductList/ProductList';
 import Image from 'next/image';
 import gridIcon from '../Img/Grid.png';
 import listIcon from '../Img/list.png';
+import Sidebar from '../components/Sidebar/Sidebar';
 
 const HomePage: React.FC = () => {
   return (
@@ -13,9 +14,10 @@ const HomePage: React.FC = () => {
       <Navbar />
       <main className="flex-grow py-10 px-4 bg-gray-100">
         <div className="flex">
-          <aside className="w-1/4 p-4 bg-white shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Filtros</h2>
+          <aside className="w-1/4 p-4">
+            
             {/* Contenido de los filtros */}
+            <Sidebar />
           </aside>
           <section className="w-3/4 p-4">
             
