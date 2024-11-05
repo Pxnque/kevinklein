@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar/Navbar'
 import Footer from '../components/Footer/Footer'
 import ShoppingCart from '../components/ShoppingCart/ShoppingCart'
 import CheckoutSummary from '../components/CheckoutSummary/CheckoutSummary'
+import Slider from '../components/Slider/Slider'
 
 
 const page = () => {
@@ -21,6 +22,7 @@ const page = () => {
                     <div className="container mx-auto p-12 border border-gray-400 max-w-md justify-center content-center text-xl"><p> Añadir cupón de descuento </p></div>
                     <CheckoutSummary />
                 </main>
+                <Slider />
 
                 <Footer />
             </div>

@@ -6,6 +6,7 @@ import hombre1 from '../hombre1.png';
 import hombre2 from '../hombre2.png';
 import hombre3 from '../hombre3.png';
 import hombre4 from '../hombre4.png';
+import Slider from '@/app/components/Slider/Slider';
 
 interface FAQItem {
     question: string;
@@ -205,6 +206,7 @@ const page = () => {
                 </div>
             </div>
         </div>
+        <Slider />
     </>
   )
 }

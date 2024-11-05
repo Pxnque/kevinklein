@@ -7,6 +7,7 @@ import Image from 'next/image';
 import gridIcon from '../Img/Grid.png';
 import listIcon from '../Img/list.png';
 import Sidebar from '../components/Sidebar/Sidebar';
+import Card from '../components/Card/ProductCard';
 
 const HomePage: React.FC = () => {
   return (
@@ -68,7 +69,9 @@ const HomePage: React.FC = () => {
             </div>
 
             <ProductList />
-          </section>
+            <br />
+            <Card />
+            </section>
         </div>
       </main>
       <Footer />
