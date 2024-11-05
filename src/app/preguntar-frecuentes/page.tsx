@@ -18,15 +18,15 @@ const page = () => {
   };
   const faqData: FAQItem[] = [
     {
-      question: "¿QUÉ ES CALVIN KLEIN?",
+      question: "¿QUÉ ES KEVIN KLEIN?",
       answer: (
         <>
           <p>
-            CALVIN KLEIN, Inc. es uno de los principales estudios de marketing y diseño de moda del mundo. Diseña y comercializa colecciones de ropa de diseñador para mujer y hombre, y una gama de otros productos que se fabrican y comercializan a través de una extensa red de acuerdos de licencias y otras disposiciones en todo el mundo.
+            KEVIN KLEIN, Inc. es uno de los principales estudios de marketing y diseño de moda del mundo. Diseña y comercializa colecciones de ropa de diseñador para mujer y hombre, y una gama de otros productos que se fabrican y comercializan a través de una extensa red de acuerdos de licencias y otras disposiciones en todo el mundo.
           </p>
           <br />
           <p>
-            Las marcas/estilos de vida incluyen CALVIN KLEIN Collection, CALVIN KLEIN Platinum Label, CALVIN KLEIN Jeans y CALVIN KLEIN Underwear. Las líneas de producto bajo las marcas de CALVIN KLEIN abarcan vestidos y trajes de mujer, accesorios de vestir y ropa confeccionada a medida para hombre, ropa deportiva para hombre y mujer, ropa de colección y de pasarela, ropa interior, perfumes, gafas, medias y calcetines, calzado, ropa de baño, joyas, relojes, ropa de abrigo, bolsos de mano y accesorios de piel.
+            Las marcas/estilos de vida incluyen KEVIN KLEIN Collection, KEVIN KLEIN Platinum Label, KEVIN KLEIN Jeans y KEVIN KLEIN Underwear. Las líneas de producto bajo las marcas de KEVIN KLEIN abarcan vestidos y trajes de mujer, accesorios de vestir y ropa confeccionada a medida para hombre, ropa deportiva para hombre y mujer, ropa de colección y de pasarela, ropa interior, perfumes, gafas, medias y calcetines, calzado, ropa de baño, joyas, relojes, ropa de abrigo, bolsos de mano y accesorios de piel.
           </p>
           <br />
           <span>En cualquier momento puedes contactarnos a través de nuestro formulario de contacto </span>
