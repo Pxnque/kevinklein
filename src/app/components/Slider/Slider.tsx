@@ -40,7 +40,7 @@ export default function Slider() {
 
         <div className="w-[80%] mx-auto overflow-hidden">
           <div
-            className="flex transition-transform duration-500"
+            className="flex transition-transform duration-300"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {productos.map((producto, index) => (
@@ -48,15 +48,15 @@ export default function Slider() {
                 key={index}
                 className="w-1/4 flex-shrink-0 p-2 hover:scale-105 transition-transform duration-300"
               >
-                <div className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-black transition-colors">
+                <div className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-200 transition-colors">
                   <Image
                     src={producto.image}
                     alt={producto.nombre}
                     className="mx-auto"
                   />
-                  <p className="mt-2 text-black hover:text-white">{producto.nombre}</p>
-                  <p className="text-black hover:text-white">{producto.precio}</p>
-                  <div className="text-black hover:text-white">{producto.rating}</div>
+                  <p className="mt-2 text-black">{producto.nombre}</p>
+                  <p className="text-black ">{producto.precio}</p>
+                  <div className="text-black ">{producto.rating}</div>
                 </div>
               </div>
             ))}
@@ -65,7 +65,7 @@ export default function Slider() {
 
         <button
           onClick={nextSlide}
-          className="absolute right-2 z-10 bg-white text-black rounded-full p-2 shadow-lg"
+          className="absolute right-2 z-10 bg-white  rounded-full p-2 shadow-lg"
         >
           →
         </button>

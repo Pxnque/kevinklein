@@ -7,6 +7,8 @@ import hombre2 from '../hombre2.png';
 import hombre3 from '../hombre3.png';
 import hombre4 from '../hombre4.png';
 import Slider from '@/app/components/Slider/Slider';
+import Navbar from '@/app/components/Navbar/Navbar';
+import Footer from '@/app/components/Footer/Footer';
 
 interface FAQItem {
     question: string;
@@ -91,11 +93,14 @@ const page = () => {
     ];
   return (
     <>
+    <div className="bg-black">
+        <Navbar/>
+        </div>
             <div className="container mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             
             <div className="space-y-4 max-w-full">
                 <div className="aspect-w-1 aspect-h-1">
-                    <Image src={mainImage} alt="Product Image" className="w-full h-1/4 object-cover rounded-lg" />
+                    <Image src={mainImage}  alt="Product Image" className="w-full h-1/4 object-cover rounded-lg" />
                 </div>
                 
                 <div className="flex sm:space-x-10 md:space-x-7 xl:space-x-10 2xl:space-x-6 w-full">
@@ -207,6 +212,7 @@ const page = () => {
             </div>
         </div>
         <Slider />
+        <Footer/>
     </>
   )
 }

@@ -52,7 +52,7 @@ const ShoppingCart = () => {
                             </td>
                             <td>{item.quantity}</td>
                             <td>${item.total.toFixed(2)}</td>
-                            <br />
+                            
                         </tr>
                     ))}
                 </tbody>

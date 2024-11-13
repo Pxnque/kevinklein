@@ -13,7 +13,7 @@ const Navbar = () => {
           
           <div>
             <a href="/">
-            <Image src={ImagenLogin} alt='logo' className='w-16 cursor-pointer'/>
+            <Image src={ImagenLogin} alt='logo' height={64} width={64} className='w-16 cursor-pointer'/>
             </a>
           </div>
 

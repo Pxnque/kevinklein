@@ -1,8 +1,13 @@
 import React from 'react'
+import Navbar from "@/app/components/Navbar/Navbar";
+import Footer from "@/app/components/Footer/Footer";
 
 const RegisterPage = () => {
   return (
     <>
+    <div className="bg-black">
+        <Navbar/>
+    </div>
     <div className='bg-custom-logreg bg-cover h-auto w-auto'>
     
     <div className='flex min-h-full flex-1 flex-row justify-center px-6 py-36 lg:px-8'>
@@ -48,6 +53,7 @@ const RegisterPage = () => {
 </div>
 </div>
     </div>
+    <Footer/>
     </>
   )
 }
