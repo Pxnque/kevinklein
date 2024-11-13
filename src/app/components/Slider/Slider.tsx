@@ -65,7 +65,7 @@ export default function Slider() {
 
         <button
           onClick={nextSlide}
-          className="absolute right-2 z-10 bg-white  rounded-full p-2 shadow-lg"
+          className="absolute right-2 z-10 bg-white  text-black  rounded-full p-2 shadow-lg "
         >
           →
         </button>
