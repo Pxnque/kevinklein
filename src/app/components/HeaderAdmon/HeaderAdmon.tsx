@@ -7,11 +7,11 @@ export function Header() {
     return (
         <header className="w-full bg-white border-b">
             <div className="flex items-center justify-between px-6 py-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 content-center">
                     {/* Logo de Kevin Klein */}
                     <Image src={ImagenLogin} alt="Kevin Klein Logo" height={48} width={48} className="h-12 w-auto cursor-pointer" />
                     {/* Letras de Kevin Klein con tamaño reducido y centrado respecto al logo */}
-                   
+                    <Image src={ImagenLetras} alt="KEVIN KLEIN" className="ml-5 h-auto w-auto" />
                 </div>
                 <div className="flex items-center gap-4 flex-1 max-w-xl mx-auto">
                     <div className="relative flex-1">
