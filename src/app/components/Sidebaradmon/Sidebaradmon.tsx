@@ -20,7 +20,7 @@ const navItems: NavItem[] = [
   { title: "Dashboard", href: "/admon/Dashboard", icon: LayoutDashboard },
   { title: "Añadir Producto", href: "/admon/AgregarProducto", icon: PlusSquare },
   { title: "Editar Producto", href: "/admon/EditarProducto", icon: Edit3 },
-  { title: "Ver Producto", href: "/admon/VerProducto", icon: Eye },
+  { title: "Ver Producto", href: "/admon/Resenas", icon: Eye },
   { title: "Ventas", href: "/admon/Ventas", icon: ShoppingCart },
   { title: "Configuración (Datos de la tienda)", href: "/admon/Configuracion", icon: Settings },
 ];
