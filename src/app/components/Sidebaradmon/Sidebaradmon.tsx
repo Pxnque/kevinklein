@@ -8,20 +8,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { title: "Dashboard", href: "/", icon: LayoutDashboard },
-  { title: "Estadísticas", href: "/estadisticas", icon: BarChart2 },
-  { title: "Productos", href: "/productos", icon: Package },
-  { title: "Ordenes", href: "/ordenes", icon: ShoppingCart },
-  { title: "Transacciones", href: "/transacciones", icon: Receipt },
-  { title: "Mensajes", href: "/mensajes", icon: MessageSquare },
-  { title: "Reseñas", href: "/resenas", icon: Star },
-  { title: "Configuración", href: "/configuracion", icon: Settings },
+  { title: "Dashboard", href: "/admon/Dashboard", icon: LayoutDashboard },
+  { title: "Estadísticas", href: "/admon/Estadisticas", icon: BarChart2 },
+  { title: "Productos", href: "/admon/Productos", icon: Package },
+  { title: "Ordenes", href: "/admon/Ordenes", icon: ShoppingCart },
+  { title: "Transacciones", href: "/admon/Transacciones", icon: Receipt },
+  { title: "Mensajes", href: "/admon/Mensajes", icon: MessageSquare },
+  { title: "Reseñas", href: "/admon/Resenas", icon: Star },
+  { title: "Configuración", href: "/admon/Configuracion", icon: Settings },
 ]
 
 
 export function Sidebar() {
     return (
-        <div className="w-64 border-r bg-white sticky top-0 h-[calc(100vh-64px)]">
+        <div className="w-64 border-r bg-white sticky top-16 h-[calc(100vh-64px)]">
             <div className="p-4">
                 <div className="flex items-center gap-2 mb-8">
                     <img src="/placeholder.svg?height=40&width=40" alt="Profile" className="rounded-full" />

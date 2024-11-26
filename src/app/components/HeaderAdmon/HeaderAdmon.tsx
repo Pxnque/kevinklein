@@ -5,12 +5,12 @@ import Image from 'next/image'
 
 export function Header() {
     return (
-        <header className="w-full bg-white border-b">
+        <header className="w-full bg-white border-b fixed top-0 z-50">
             <div className="flex items-center justify-between px-6 py-3">
                 <div className="flex items-center gap-2 content-center">
                     {/* Logo de Kevin Klein */}
                     <Image src={ImagenLogin} alt="Kevin Klein Logo" height={48} width={48} className="h-12 w-auto cursor-pointer" />
-                    {/* Letras de Kevin Klein con tamaño reducido y centrado respecto al logo */}
+                    {/* Letras de Kevin Klein */}
                     <Image src={ImagenLetras} alt="KEVIN KLEIN" className="ml-5 h-auto w-auto" />
                 </div>
                 <div className="flex items-center gap-4 flex-1 max-w-xl mx-auto">
@@ -31,5 +31,5 @@ export function Header() {
                 </div>
             </div>
         </header>
-    )
+    );
 }
