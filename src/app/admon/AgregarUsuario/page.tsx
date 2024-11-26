@@ -3,12 +3,52 @@
 import { useState } from "react";
 import { Sidebar } from "../../components/Sidebaradmon/Sidebaradmon";
 import { Header } from "../../components/HeaderAdmon/HeaderAdmon";
+import PocketBase from "pocketbase";
 
+const pb = new PocketBase("https://kevinklein.pockethost.io");
 
 export default function AgregarUsuarioPage() {
-  const [showPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    name: "",
+    email: "",
+    password: "",
+    avatar: null as File | null,
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, files } = e.target;
+    if (name === "avatar" && files) {
+      setFormData((prev) => ({ ...prev, avatar: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { username, name, email, password, avatar } = formData;
+
+    // Preparar datos para PocketBase
+    const data = new FormData();
+    data.append("username", username);
+    data.append("name", name);
+    data.append("email", email);
+    data.append("password", password);
+    data.append("passwordConfirm", password);
+    data.append("rol", "admin"); // Rol fijo a admin
+    if (avatar) data.append("avatar", avatar);
+
+    try {
+      await pb.collection("users").create(data);
+      alert("Usuario creado exitosamente");
+    } catch (error: any) {
+      setErrors({ general: "Error al crear el usuario. Verifica los datos ingresados." });
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -22,14 +62,17 @@ export default function AgregarUsuarioPage() {
                 <h1 className="text-4xl font-bold text-gray-800">Añadir Usuario</h1>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
                 {/* Username */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                   <input
                     type="text"
+                    name="username"
                     className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
                     placeholder="Ingrese el nombre de usuario"
+                    value={formData.username}
+                    onChange={handleInputChange}
                   />
                 </div>
 
@@ -38,8 +81,11 @@ export default function AgregarUsuarioPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
                   <input
                     type="text"
+                    name="name"
                     className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
                     placeholder="Ingrese el nombre completo"
+                    value={formData.name}
+                    onChange={handleInputChange}
                   />
                 </div>
 
@@ -48,31 +94,25 @@ export default function AgregarUsuarioPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                   <input
                     type="email"
+                    name="email"
                     className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
                     placeholder="Ingrese el correo electrónico"
+                    value={formData.email}
+                    onChange={handleInputChange}
                   />
                 </div>
 
                 {/* Avatar */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Avatar</label>
-                  <div className="flex items-center justify-center border border-gray-300 rounded-lg p-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 text-gray-400 mb-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    <span className="text-gray-500">Arrastra una foto o haz clic para subir</span>
-                  </div>
+                  <input
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                  />
+                  <p className="text-xs text-gray-500">Formato permitido: JPG, PNG</p>
                 </div>
 
                 {/* Contraseña */}
@@ -80,19 +120,24 @@ export default function AgregarUsuarioPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
                   <input
                     type={showPassword ? "text" : "password"}
+                    name="password"
                     className="w-full border border-gray-300 rounded-md p-2 text-sm text-black pr-10"
                     placeholder="Ingrese la contraseña"
+                    value={formData.password}
+                    onChange={handleInputChange}
                   />
-
                 </div>
 
                 {/* Botón de Añadir */}
                 <div className="flex justify-center">
-                  <button className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md text-sm">
+                  <button
+                    type="submit"
+                    className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+                  >
                     Añadir Usuario
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </main>
         </div>
