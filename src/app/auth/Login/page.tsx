@@ -47,7 +47,7 @@ const LoginPage = () => {
             await pb.collection('users').authWithPassword(email, password);
             if(pb.authStore.isValid){ //si el usuario está registrado en la base de datos, se redirige al 
                 //panel de administrador
-                router.push('/hombre');
+                router.push('/Homepage');
                 
                 }else{
                 alert("No se pudo iniciar sesion")
