@@ -6,6 +6,7 @@ import {
   Eye,
   ShoppingCart,
   Settings,
+  UserPlus,
 } from "lucide-react";
 
 interface NavItem {
@@ -15,6 +16,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { title: "Añadir Usuario", href: "/admon/AgregarUsuario", icon: UserPlus },
   { title: "Dashboard", href: "/admon/Dashboard", icon: LayoutDashboard },
   { title: "Añadir Producto", href: "/admon/AgregarProducto", icon: PlusSquare },
   { title: "Editar Producto", href: "/admon/EditarProducto", icon: Edit3 },
