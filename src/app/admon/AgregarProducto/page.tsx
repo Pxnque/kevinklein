@@ -1,147 +1,240 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Sidebar } from "../../components/Sidebaradmon/Sidebaradmon";
 import { Header } from "../../components/HeaderAdmon/HeaderAdmon";
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("https://kevinklein.pockethost.io");
 
 export default function AgregarProductoPage() {
-    return (
-        <div className="flex h-screen bg-gray-100">
-            <div className="flex flex-col w-full">
-                <Header />
-                <div className="flex flex-1">
-                    <Sidebar />
-                    <main className="flex-1 p-6 overflow-y-auto bg-gray-100">
-                        <div className="max-w-[1200px] mx-auto">
-                            {/* Contenedor del Título */}
-                            <div className="mb-6 pt-20">
-                                <h1 className="text-4xl font-bold text-center text-gray-800">Añadir Producto</h1>
-                            </div>
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    precio: "",
+    descuento: "",
+    tallas: [] as string[],
+    cantidad: "",
+    id_categoria: "",
+    fotos: [] as File[],
+  });
+  const [categorias, setCategorias] = useState<{ id: string; nombre: string }[]>([]);
+  const [errors, setErrors] = useState({ general: "" });
 
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                {/* Campos del producto */}
-                                <div className="grid grid-cols-2 gap-6 mb-6">
-                                    {/* ID del producto */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">ID</label>
-                                        <input
-                                            type="text"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese ID del producto"
-                                        />
-                                    </div>
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await pb.collection("categorias").getFullList(200, {
+          sort: "-created",
+        });
 
-                                    {/* Nombre del producto */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                                        <input
-                                            type="text"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese nombre del producto"
-                                        />
-                                    </div>
-                                </div>
+        setCategorias(response.map((cat) => ({ id: cat.id, nombre: cat.nombre })));
+        setErrors({ general: "" }); // Elimina cualquier error relacionado con categorías
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+        setErrors({ general: "No se pudieron cargar las categorías." });
+      }
+    };
 
-                                {/* Descripción */}
-                                <div className="mb-6">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Descripción
-                                    </label>
-                                    <textarea
-                                        className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                        placeholder="Escribe una descripción del producto"
-                                    />
-                                </div>
+    fetchCategorias();
+  }, []);
 
-                                {/* Precio y Descuento */}
-                                <div className="grid grid-cols-2 gap-6 mb-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese el precio"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Descuento</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese el descuento (opcional)"
-                                        />
-                                    </div>
-                                </div>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-                                {/* Fotos */}
-                                <div className="flex flex-col items-center justify-center border border-gray-300 rounded-lg p-4 mb-6 relative">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-12 w-12 text-gray-400 mb-4"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 4v16m8-8H4"
-                                        />
-                                    </svg>
-                                    <span className="text-gray-500">Arrastra tus fotos para subirlas o</span>
-                                    <button className="text-blue-600 text-sm">Buscar</button>
-                                </div>
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFormData((prev) => ({
+        ...prev,
+        fotos: Array.from(e.target.files),
+      }));
+    }
+  };
 
-                                {/* Tallas, Cantidad y Categoría */}
-                                <div className="grid grid-cols-3 gap-6 mb-6">
-                                    {/* Tallas */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Tallas</label>
-                                        <input
-                                            type="text"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ejemplo: S, M, L"
-                                        />
-                                    </div>
-                                    {/* Cantidad */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
-                                        <input
-                                            type="number"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese la cantidad disponible"
-                                        />
-                                    </div>
-                                    {/* Categoría */}
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-                                        <input
-                                            type="text"
-                                            className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                                            placeholder="Ingrese la categoría"
-                                        />
-                                    </div>
-                                </div>
+  const handleTallasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      tallas: checked
+        ? [...prev.tallas, value]
+        : prev.tallas.filter((talla) => talla !== value),
+    }));
+  };
 
-                                {/* Botones de acción */}
-                                <div className="flex justify-end space-x-4">
-                                    {/* Botón Enviar */}
-                                    <button className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md text-sm">
-                                        Enviar
-                                    </button>
-                                    {/* Botón Descartar */}
-                                    <button className="flex items-center bg-red-600 text-white px-4 py-2 rounded-md text-sm">
-                                        <span className="font-bold">X</span>
-                                        <span className="ml-2">Descartar</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { nombre, descripcion, precio, descuento, tallas, cantidad, id_categoria, fotos } =
+      formData;
+
+    if (!nombre || !descripcion || !precio || !cantidad || !id_categoria || tallas.length === 0) {
+      setErrors({ general: "Todos los campos son obligatorios y deben ser válidos." });
+      return;
+    }
+
+    const data = new FormData();
+    data.append("nombre", nombre);
+    data.append("descripcion", descripcion);
+    data.append("precio", precio);
+    data.append("descuento", descuento || "0"); // Descuento opcional
+    data.append("cantidad", cantidad);
+    data.append("id_categoria", id_categoria);
+    tallas.forEach((talla) => data.append("tallas[]", talla)); // Asegura que el array de tallas se envíe correctamente
+    fotos.forEach((foto) => data.append("fotos", foto)); // Añadir fotos al FormData
+
+    try {
+      const response = await pb.collection("productos").create(data);
+      console.log("Producto creado:", response);
+      alert("Producto añadido exitosamente");
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        descuento: "",
+        tallas: [],
+        cantidad: "",
+        id_categoria: "",
+        fotos: [],
+      });
+      setErrors({ general: "" });
+    } catch (err: any) {
+      console.error("Error al añadir producto:", err);
+      setErrors({ general: "Ocurrió un error al añadir el producto." });
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      <div className="flex flex-col w-full">
+        <Header />
+        <div className="flex flex-1">
+          <Sidebar />
+          <main className="flex-1 p-6 overflow-y-auto bg-gray-100">
+            <div className="max-w-[1200px] mx-auto">
+              <div className="mb-6 pt-20 text-center">
+                <h1 className="text-4xl font-bold text-gray-800">Añadir Producto</h1>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-md p-6">
+                {errors.general && (
+                  <div className="mb-4 text-red-600 text-sm">{errors.general}</div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                    <input
+                      type="text"
+                      name="nombre"
+                      value={formData.nombre}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Ingrese el nombre del producto"
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Descripción
+                    </label>
+                    <textarea
+                      name="descripcion"
+                      value={formData.descripcion}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Escribe una descripción del producto"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        name="precio"
+                        value={formData.precio}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                        placeholder="Ingrese el precio"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Descuento
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        name="descuento"
+                        value={formData.descuento}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                        placeholder="Ingrese el descuento (opcional)"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tallas</label>
+                    <div className="flex space-x-4">
+                      {["XS", "S", "M", "L", "XL"].map((talla) => (
+                        <label key={talla} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            value={talla}
+                            checked={formData.tallas.includes(talla)}
+                            onChange={handleTallasChange}
+                          />
+                          <span>{talla}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+                    <select
+                      name="id_categoria"
+                      value={formData.id_categoria}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                    >
+                      <option value="">Seleccione una categoría</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+                    >
+                      Añadir Producto
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
+          </main>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
