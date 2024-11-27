@@ -5,6 +5,7 @@ import { Sidebar } from "../../components/Sidebaradmon/Sidebaradmon";
 import { Header } from "../../components/HeaderAdmon/HeaderAdmon";
 import PocketBase from "pocketbase";
 
+// Inicializa tu instancia de PocketBase
 const pb = new PocketBase("https://kevinklein.pockethost.io");
 
 export default function AgregarUsuarioPage() {
@@ -15,24 +16,47 @@ export default function AgregarUsuarioPage() {
     password: "",
     avatar: null as File | null,
   });
+  const [errors, setErrors] = useState({ general: "", avatar: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
-    if (name === "avatar" && files) {
-      setFormData((prev) => ({ ...prev, avatar: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Validar el tipo de archivo
+      const allowedTypes = ["image/jpeg", "image/png", "image/svg+xml", "image/gif"];
+      if (!allowedTypes.includes(file.type)) {
+        setErrors({ ...errors, avatar: "El tipo de archivo no es permitido. Solo JPG, PNG, SVG o GIF." });
+        return;
+      }
+
+      // Validar el tamaño del archivo
+      const maxSize = 5242880; // 5MB
+      if (file.size > maxSize) {
+        setErrors({ ...errors, avatar: "El tamaño del archivo excede el límite de 5MB." });
+        return;
+      }
+
+      setFormData({ ...formData, avatar: file });
+      setErrors({ ...errors, avatar: "" });
     }
-    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { username, name, email, password, avatar } = formData;
 
-    // Preparar datos para PocketBase
+    if (!username || !name || !email || !password || !avatar) {
+      setErrors({ general: "Todos los campos son obligatorios, incluyendo el avatar." });
+      return;
+    }
+
     const data = new FormData();
     data.append("username", username);
     data.append("name", name);
@@ -40,13 +64,22 @@ export default function AgregarUsuarioPage() {
     data.append("password", password);
     data.append("passwordConfirm", password);
     data.append("rol", "admin"); // Rol fijo a admin
-    if (avatar) data.append("avatar", avatar);
+    data.append("avatar", avatar); // Subida del archivo
 
     try {
-      await pb.collection("users").create(data);
+      const response = await pb.collection("users").create(data); // Subida a PocketBase
+      console.log("Usuario creado:", response);
       alert("Usuario creado exitosamente");
-    } catch (error: any) {
-      setErrors({ general: "Error al crear el usuario. Verifica los datos ingresados." });
+      setFormData({
+        username: "",
+        name: "",
+        email: "",
+        password: "",
+        avatar: null,
+      });
+    } catch (err: any) {
+      console.error("Error al crear usuario:", err);
+      setErrors({ general: "Ocurrió un error al crear el usuario. Por favor, verifica los datos." });
     }
   };
 
@@ -62,82 +95,89 @@ export default function AgregarUsuarioPage() {
                 <h1 className="text-4xl font-bold text-gray-800">Añadir Usuario</h1>
               </div>
 
-              <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-                {/* Username */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                  <input
-                    type="text"
-                    name="username"
-                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                    placeholder="Ingrese el nombre de usuario"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                  />
-                </div>
+              <div className="bg-white rounded-lg shadow-md p-6">
+                {errors.general && (
+                  <div className="mb-4 text-red-600 text-sm">{errors.general}</div>
+                )}
 
-                {/* Nombre */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                  <input
-                    type="text"
-                    name="name"
-                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                    placeholder="Ingrese el nombre completo"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                <form onSubmit={handleSubmit}>
+                  {/* Username */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Ingrese el nombre de usuario"
+                    />
+                  </div>
 
-                {/* Email */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                    placeholder="Ingrese el correo electrónico"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  {/* Nombre */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Ingrese el nombre completo"
+                    />
+                  </div>
 
-                {/* Avatar */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Avatar</label>
-                  <input
-                    type="file"
-                    name="avatar"
-                    accept="image/*"
-                    onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                  />
-                  <p className="text-xs text-gray-500">Formato permitido: JPG, PNG</p>
-                </div>
+                  {/* Email */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Ingrese el correo electrónico"
+                    />
+                  </div>
 
-                {/* Contraseña */}
-                <div className="mb-6 relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black pr-10"
-                    placeholder="Ingrese la contraseña"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  {/* Avatar */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Avatar</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                    />
+                    {errors.avatar && (
+                      <p className="text-red-500 text-sm">{errors.avatar}</p>
+                    )}
+                  </div>
 
-                {/* Botón de Añadir */}
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md text-sm"
-                  >
-                    Añadir Usuario
-                  </button>
-                </div>
-              </form>
+                  {/* Contraseña */}
+                  <div className="mb-6 relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black pr-10"
+                      placeholder="Ingrese la contraseña"
+                    />
+                  </div>
+
+                  {/* Botón de Añadir */}
+                  <div className="flex justify-center">
+                    <button
+                      type="submit"
+                      className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+                    >
+                      Añadir Usuario
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </main>
         </div>
@@ -145,3 +185,5 @@ export default function AgregarUsuarioPage() {
     </div>
   );
 }
+
+
