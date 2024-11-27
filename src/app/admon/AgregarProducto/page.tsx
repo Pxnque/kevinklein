@@ -77,11 +77,11 @@ export default function AgregarProductoPage() {
     data.append("nombre", nombre);
     data.append("descripcion", descripcion);
     data.append("precio", precio);
-    data.append("descuento", descuento || "0"); // Descuento opcional
+    data.append("descuento", descuento || "0");
     data.append("cantidad", cantidad);
     data.append("id_categoria", id_categoria);
-    tallas.forEach((talla) => data.append("tallas[]", talla)); // Asegura que el array de tallas se envíe correctamente
-    fotos.forEach((foto) => data.append("fotos", foto)); // Añadir fotos al FormData
+    tallas.forEach((talla) => data.append("tallas[]", talla));
+    fotos.forEach((foto) => data.append("fotos", foto));
 
     try {
       const response = await pb.collection("productos").create(data);
@@ -122,6 +122,7 @@ export default function AgregarProductoPage() {
                 )}
 
                 <form onSubmit={handleSubmit}>
+                  {/* Nombre */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
                     <input
@@ -134,6 +135,7 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
+                  {/* Descripción */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Descripción
@@ -147,7 +149,8 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6 mb-6">
+                  {/* Precio, Descuento y Cantidad */}
+                  <div className="grid grid-cols-3 gap-6 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
                       <input
@@ -174,8 +177,22 @@ export default function AgregarProductoPage() {
                         placeholder="Ingrese el descuento (opcional)"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Cantidad
+                      </label>
+                      <input
+                        type="number"
+                        name="cantidad"
+                        value={formData.cantidad}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                        placeholder="Ingrese la cantidad disponible"
+                      />
+                    </div>
                   </div>
 
+                  {/* Fotos */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
                     <input
@@ -187,6 +204,7 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
+                  {/* Tallas */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Tallas</label>
                     <div className="flex space-x-4">
@@ -204,6 +222,7 @@ export default function AgregarProductoPage() {
                     </div>
                   </div>
 
+                  {/* Categoría */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
                     <select
