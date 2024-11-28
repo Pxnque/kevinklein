@@ -1,10 +1,42 @@
 // components/Sidebar.tsx
 import React from 'react';
+import { useEffect, useState } from 'react';
+import pb from '@/app/lib/pocketbase'; // Importa tu cliente de PocketBase
 import ProductCardDiscount from '../CardDiscount/ProductCardDiscount';
 import { FaArrowDown, FaSortDown, FaSort, FaAngleDown } from 'react-icons/fa';
 
+// Define el tipo de los objetos de categoría que esperas de PocketBase
+interface Categoria {
+    id: string;
+    nombre: string;
+}
 
 const Sidebar = () => {
+
+    // Declara el tipo de estado de categorias como un array de objetos Categoria
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+
+    // Obtener las categorías de la base de datos PocketBase
+    useEffect(() => {
+        const fetchCategorias = async () => {
+            try {
+                const data = await pb.collection('categorias').getList(1, 20); // Ajusta según tus necesidades
+
+                // Mapear los elementos para convertirlos al tipo Categoria
+                const categoriasData = data.items.map((item) => ({
+                    id: item.id,  // Asumiendo que 'id' está presente
+                    nombre: item.nombre,  // Asumiendo que 'nombre' está presente
+                }));
+
+                setCategorias(categoriasData);
+            } catch (error) {
+                console.error('Error al obtener las categorías:', error);
+            }
+        };
+
+        fetchCategorias();
+    }, []);
+
     return (
         <aside className="w-full p-4 bg-white shadow-md text-black  border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
             {/* Search Bar */}
@@ -31,19 +63,24 @@ const Sidebar = () => {
 
             {/* Categorías */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
                 <ul className="mt-2 space-y-2">
-                    <li className="flex items-center"><input type="checkbox" id="playeras" className="mr-2" /><label htmlFor="playeras">Playeras</label></li>
-                    <li className="flex items-center"><input type="checkbox" id="camisas" className="mr-2" /><label htmlFor="camisas">Camisas</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="pantalones" className='mr-2' /><label htmlFor="pantalones">Pantalones</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="shorts" className='mr-2' /><label htmlFor="shorts">Shorts</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="trajes" className='mr-2' /><label htmlFor="trajes">Trajes y Blazers</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="sudaderas" className='mr-2' /><label htmlFor="sudaderas">Sudaderas y suéteres</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="chamarras" className='mr-2' /><label htmlFor="chamarras">Chamarras y abrigos</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="ropa-deportiva" className='mr-2' /><label htmlFor="ropa-deportiva">Ropa deportiva</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="ropa-interior" className='mr-2' /><label htmlFor="ropa-interior">Ropa interior</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="zapatos" className='mr-2' /><label htmlFor="zapatos">Zapatos</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="accesorios" className='mr-2' /><label htmlFor="accesorios">Accesorios</label></li>
+                    {categorias.length > 0 ? (
+                        categorias.map((categoria) => (
+                            <li key={categoria.id} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id={categoria.nombre.toLowerCase().replace(/\s+/g, '-')}
+                                    className="mr-2"
+                                />
+                                <label htmlFor={categoria.nombre.toLowerCase().replace(/\s+/g, '-')}>
+                                    {categoria.nombre}
+                                </label>
+                            </li>
+                        ))
+                    ) : (
+                        <p>Cargando categorías...</p>
+                    )}
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
@@ -51,7 +88,7 @@ const Sidebar = () => {
 
             {/* Precio */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
                         <input type="checkbox" id="menos50" className="mr-2" />
@@ -76,7 +113,7 @@ const Sidebar = () => {
 
             {/* Calificación */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h3>
                 <ul className="mt-2 space-y-2">
                     {[5, 4, 3, 2, 1].map((rating) => (
                         <li key={rating} className="flex items-center">
@@ -98,7 +135,7 @@ const Sidebar = () => {
 
             {/* Color */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
                         <input type="checkbox" id="blanco" className="mr-2" />
@@ -149,7 +186,7 @@ const Sidebar = () => {
 
             {/* Populares */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
                 <ul className="mb-8 flex flex-wrap gap-2">
                     {['Top', 'Fashion', 'Hombre', 'Colección', 'Colección de hombre', 'Nuevo', 'Ropa', 'Lo mejor', 'Galería', 'Ropa de hombre'].map((item, index) => (
                         <li key={index}>
@@ -164,7 +201,7 @@ const Sidebar = () => {
 
             {/* Productos nuevos */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Productos nuevos <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Productos nuevos <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
                 <div className="space-y-4">
                     <ProductCardDiscount />
                     <ProductCardDiscount />
