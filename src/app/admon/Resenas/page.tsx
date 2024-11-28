@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Sidebar } from "../../components/Sidebaradmon/Sidebaradmon";
 import { Header } from "../../components/HeaderAdmon/HeaderAdmon";
+import Chatbot from "../../components/Chatbot/Chatbot";
 
 interface Reseña {
   id: string;
@@ -100,6 +101,8 @@ const ResenasPage: React.FC = () => {
                   <p className="text-center text-gray-500 mt-4">No se encontraron resultados.</p>
                 )}
               </div>
+              {/* Componente del Chatbot */}
+              <Chatbot />
             </div>
           </main>
         </div>
