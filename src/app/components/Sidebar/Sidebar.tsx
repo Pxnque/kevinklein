@@ -20,7 +20,7 @@ const Sidebar = () => {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const data = await pb.collection('categorias').getList(1, 20); // Ajusta según tus necesidades
+                const data = await pb.collection('categorias').getList(1, 20, {requestKey: null}); // Ajusta según tus necesidades
 
                 // Mapear los elementos para convertirlos al tipo Categoria
                 const categoriasData = data.items.map((item) => ({
@@ -203,8 +203,6 @@ const Sidebar = () => {
             <div className="space-y-4">
                 <h2 className="flex w-full text-2xl font-bold mb-4">Productos nuevos <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
                 <div className="space-y-4">
-                    <ProductCardDiscount />
-                    <ProductCardDiscount />
                     <ProductCardDiscount />
                 </div>
                 <button className="mt-4 text-blue-500 hover:underline">Mostrar más</button>

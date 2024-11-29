@@ -68,7 +68,6 @@ const HomePage: React.FC = () => {
               <p className="text-gray-500">Mostrando 1 - 12 de 36</p>
             </div>
 
-            <ProductList />
             <br />
             <Card />
             </section>
