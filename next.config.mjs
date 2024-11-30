@@ -11,17 +11,6 @@ const nextConfig = {
   },
   // ...
 
-  // export: {
-  //   async rewrites() {
-  //     return [
-  //       {
-  //         source: '/api/:path*',
-  //         destination: 'https://kevinklein.pockethost.io/api/:path*',
-  //       },
-  //     ];
-  //   },
-  // },
-
 };
 
 export default nextConfig;
