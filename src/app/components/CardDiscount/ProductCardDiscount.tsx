@@ -1,57 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import pb from '@/app/lib/pocketbase'; // Asegúrate de importar tu cliente de PocketBase
 import default_img from '@/app/public/img/red_glasses.png';
 
-// Define el tipo de un producto según la estructura de PocketBase
+// Define el tipo de un producto
 interface Producto {
   id: string;
   nombre: string;
-  url: string;  // 'url' es el campo de archivo en PocketBase
+  url: string;
   precio: number;
-  descuento: number;  // Atributo descuento
+  descuento: number;
 }
 
-const ProductCardDiscount = () => {
-  const [productos, setProductos] = useState<Producto[]>([]); // Para almacenar los productos
+// Props del componente
+interface ProductCardDiscountProps {
+  productos: Producto[]; // Recibe los productos seleccionados
+}
 
-  // Obtener productos de PocketBase
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        // Obtener productos con descuento menor a 1 desde PocketBase
-        const productoData = await pb.collection('productos').getFullList(20, {
-          filter: 'descuento > 0', requestKey: null // Filtra productos cuyo descuento sea menor a 1
-        });
-
-        // Convertir los datos obtenidos en el tipo Producto
-        const productosList = productoData.map((producto: any) => ({
-          id: producto.id,
-          nombre: producto.nombre,
-          url: producto.fotos && producto.fotos[0] ? pb.files.getURL(producto, producto.fotos[0]) : '',  // Obtén la URL del archivo
-          precio: producto.precio,
-          descuento: producto.descuento,
-        }));
-
-        setProductos(productosList); // Actualizar el estado de productos
-      } catch (error) {
-        console.error('Error al obtener los productos con descuento:', error);
-      }
-    };
-
-    fetchProductos();
-  }, []);
-
-  // Seleccionar solo 3 productos aleatorios de los filtrados
-  const productosAleatorios = productos.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-  if (productosAleatorios.length === 0) {
-    return <p>Cargando productos...</p>; // Muestra algo mientras los datos se cargan
+const ProductCardDiscount: React.FC<ProductCardDiscountProps> = ({ productos }) => {
+  if (productos.length === 0) {
+    return <p>No hay productos disponibles.</p>;
   }
 
   return (
     <div className="flex flex-col space-y-6">
-      {productosAleatorios.map((producto) => (
+      {productos.map((producto) => (
         <div key={producto.id} className="flex border rounded-lg overflow-hidden shadow-lg bg-white max-w-sm">
           {/* Imagen del producto */}
           <div className="w-1/3 relative">
