@@ -16,39 +16,48 @@ const Navbar = () => {
   const profileIconRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // Check if the user is logged in when the component mounts
-    setIsLoggedIn(pb.authStore.isValid);
-    setId(pb.authStore.model.id);
-    if (pb.authStore.isValid) {
-      // Fetch user data after confirming the user is logged in
-      const fetchUserData = async () => {
-        try {
-          const record = await pb.collection('users').getOne(pb.authStore.model.id);
+    const checkAuth = async () => {
+      try {
+        const isAuthenticated = pb.authStore.isValid;
+
+        setIsLoggedIn(isAuthenticated);
+
+        if (isAuthenticated && pb.authStore.model) {
+          const userId = pb.authStore.model.id;
+          setId(userId);
+
+          // Fetch user data
+          const record = await pb.collection('users').getOne(userId);
+
           setUserData({
-            avatar: record.avatar || '', // Set the avatar (adjust based on your field name)
-            username: record.username || '', // Set the username (adjust based on your field name)
-            role: record.rol || '', // Set the user role (adjust based on your field name)
+            avatar: record.avatar || '', // Set the avatar
+            username: record.username || '', // Set the username
+            role: record.rol || '', // Set the user role
           });
+
           console.log(record.username);
           console.log(record.avatar);
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        } finally {
-          setLoading(false);
+          console.log(record.rol);
         }
-      };
+      } catch (error) {
+        console.error('Error checking authentication or fetching user data:', error);
+      } finally {
+        setLoading(false); // Ensure loading is stopped
+      }
+    };
 
-      fetchUserData();
-    } else {
-      setLoading(false); // If not logged in, stop loading
-    }
-  }, [pb.authStore.isValid]);
+    checkAuth();
+  }, [pb]);
 
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-          profileIconRef.current && !profileIconRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        profileIconRef.current &&
+        !profileIconRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     };
@@ -60,26 +69,48 @@ const Navbar = () => {
   }, []);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(prev => !prev);
+    setIsDropdownOpen((prev) => !prev);
   };
-  
+
   const baseUrl = 'https://kevinklein.pockethost.io/api/files/users/';
-  
+
   return (
     <header className="bg-black">
       <nav className="flex justify-between items-center w-[92%] mx-auto">
         <div>
           <a href="/">
-            <Image src={ImagenLogin} alt="logo" height={64} width={64} className="w-16 cursor-pointer" />
+            <Image
+              src={ImagenLogin}
+              alt="logo"
+              height={64}
+              width={64}
+              className="w-16 cursor-pointer"
+            />
           </a>
         </div>
 
         <div className="nav-links duration-500 md:static absolute md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:w-auto w-full flex items-center px-5">
           <ul className="text-white flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8 font-montserrat">
-            <li><Link href="/" className="hover:text-gray-200">INICIO</Link></li>
-            <li><Link href="/Homepage" className="hover:text-gray-200">HOMBRE</Link></li>
-            <li><Link href="/Homepage" className="hover:text-gray-200">MUJER</Link></li>
-            <li><Link href="/preguntar-frecuentes" className="hover:text-gray-200">NOSOTROS</Link></li>
+            <li>
+              <Link href="/" className="hover:text-gray-200">
+                INICIO
+              </Link>
+            </li>
+            <li>
+              <Link href="/Homepage" className="hover:text-gray-200">
+                HOMBRE
+              </Link>
+            </li>
+            <li>
+              <Link href="/Homepage" className="hover:text-gray-200">
+                MUJER
+              </Link>
+            </li>
+            <li>
+              <Link href="/preguntar-frecuentes" className="hover:text-gray-200">
+                NOSOTROS
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -110,25 +141,40 @@ const Navbar = () => {
               {isDropdownOpen && (
                 <ul
                   ref={dropdownRef}
-                  className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg"
+                  className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg z-50"
                 >
                   <li>
-                    <Link href="/profile" className="block px-4 py-2 hover:bg-gray-200">My Profile</Link>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 hover:bg-gray-200"
+                    >
+                      My Profile
+                    </Link>
                   </li>
                   <li>
-                    <Link href="/configuration" className="block px-4 py-2 hover:bg-gray-200">Configuration</Link>
+                    <Link
+                      href="/configuration"
+                      className="block px-4 py-2 hover:bg-gray-200"
+                    >
+                      Configuration
+                    </Link>
                   </li>
                   {userData.role === 'admin' && (
                     <li>
-                      <Link href="/admon" className="block px-4 py-2 hover:bg-gray-200">Admin Panel</Link>
+                      <Link
+                        href="/admon"
+                        className="block px-4 py-2 hover:bg-gray-200"
+                      >
+                        Admin Panel
+                      </Link>
                     </li>
                   )}
                   <li>
                     <button
                       onClick={() => {
-                        pb.authStore.clear(); // Log the user out
+                        pb.authStore.clear();
                         setIsLoggedIn(false);
-                        setIsDropdownOpen(false); // Close the dropdown when signing out
+                        setIsDropdownOpen(false);
                       }}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-200"
                     >
@@ -153,4 +199,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
