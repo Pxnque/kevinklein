@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react'
 import ImagenLogin from '@/app/public/img/LogoAdmin.png'
 import ImagenLetras from '@/app/public/img/Letras.png'
+import ImagenPerfil from '@/app/public/img/AdminProfile.jpg'
 import Image from 'next/image'
 
 export function Header() {
@@ -25,8 +26,9 @@ export function Header() {
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <img src="/placeholder.svg?height=32&width=32" alt="Profile" className="rounded-full" />
-                        <span className="text-sm font-medium">Kevin Klein</span>
+                        <Image src={ImagenPerfil} alt="Profile" className="rounded-full" width={40} // Ancho de la imagen
+            height={40}  />
+                        <span className="text-sm font-medium text-black">Kevin Klein</span>
                     </div>
                 </div>
             </div>

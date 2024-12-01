@@ -8,7 +8,7 @@ import listIcon from "../Img/list.png";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Card from "../components/Card/ProductCard";
 import pb from "@/app/lib/pocketbase";
-
+import Chatbot from "../components/Chatbot/Chatbot";
 // Tipo para los productos
 interface Producto {
   id: string;
@@ -24,6 +24,7 @@ interface Categoria {
   id: string;
   nombre: string;
 }
+
 
 const HomePage: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]); // Estado para almacenar los productos con rating
@@ -242,6 +243,7 @@ const HomePage: React.FC = () => {
           </section>
         </div>
       </main>
+      <Chatbot />
       <Footer />
     </div>
   );

@@ -1,4 +1,10 @@
 import Link from "next/link";
+import Image from "next/image"; 
+import ImagenPerfil from '@/app/public/img/AdminProfile.jpg'
+
+
+
+
 import {
   LayoutDashboard,
   PlusSquare,
@@ -20,7 +26,7 @@ const navItems: NavItem[] = [
   { title: "Dashboard", href: "/admon/Dashboard", icon: LayoutDashboard },
   { title: "Añadir Producto", href: "/admon/AgregarProducto", icon: PlusSquare },
   { title: "Editar Producto", href: "/admon/EditarProducto", icon: Edit3 },
-  { title: "Ver Producto", href: "/admon/Resenas", icon: Eye },
+  { title: "Reseñas", href: "/admon/Resenas", icon: Eye },
   { title: "Ventas", href: "/admon/Ventas", icon: ShoppingCart },
   { title: "Configuración (Datos de la tienda)", href: "/admon/Configuracion", icon: Settings },
 ];
@@ -30,7 +36,14 @@ export function Sidebar() {
     <div className="w-64 border-r bg-white sticky top-16 h-[calc(100vh-64px)]">
       <div className="p-4">
         <div className="flex items-center gap-2 mb-8">
-          <img src="/placeholder.svg?height=40&width=40" alt="Profile" className="rounded-full" />
+          {/* Cambié el <img> por el componente <Image> */}
+          <Image
+            src={ImagenPerfil} // Ruta relativa desde la carpeta public
+            alt="Profile"
+            width={40} // Ancho de la imagen
+            height={40} // Altura de la imagen
+            className="rounded-full object-cover"
+          />
           <div>
             <h3 className="font-medium text-gray-900">Kevin Klein</h3>
             <p className="text-sm text-gray-500">Verificado</p>

@@ -5,7 +5,7 @@ import Footer from '../components/Footer/Footer'
 import CartItems from '../components/CartItems/CartItems'
 import CheckoutSummary from '../components/CheckoutSummary/CheckoutSummary'
 import Slider from '../components/Slider/Slider'
-
+import Chatbot from "../components/Chatbot/Chatbot";
 const ShoppingCart: React.FC = () => {
 
     return (
@@ -27,6 +27,7 @@ const ShoppingCart: React.FC = () => {
                 <Slider />
 
                 <Footer />
+                <Chatbot />
             </div>
         </>
     )
