@@ -8,6 +8,7 @@ import gridIcon from '../Img/Grid.png';
 import listIcon from '../Img/list.png';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Card from '../components/Card/ProductCard';
+import Chatbot from "../components/Chatbot/Chatbot";
 
 const HomePage: React.FC = () => {
   return (
@@ -74,6 +75,7 @@ const HomePage: React.FC = () => {
             </section>
         </div>
       </main>
+      <Chatbot />
       <Footer />
     </div>
   );

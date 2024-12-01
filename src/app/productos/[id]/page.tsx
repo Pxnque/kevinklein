@@ -9,6 +9,7 @@ import hombre4 from '../hombre4.png';
 import Slider from '@/app/components/Slider/Slider';
 import Navbar from '@/app/components/Navbar/Navbar';
 import Footer from '@/app/components/Footer/Footer';
+import Chatbot from '@/app/components/Chatbot/Chatbot';
 
 interface FAQItem {
     question: string;
@@ -212,6 +213,7 @@ const page = () => {
             </div>
         </div>
         <Slider />
+        <Chatbot />
         <Footer/>
     </>
   )

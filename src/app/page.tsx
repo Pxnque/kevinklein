@@ -12,6 +12,7 @@ import { RiSecurePaymentLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa";
 import Sidebar from "./components/Sidebar/Sidebar";
 import ProductCard from "./components/Card/ProductCard";
+import Chatbot from "./components/Chatbot/Chatbot";
 
 
 
@@ -88,6 +89,7 @@ export default function Home() {
       </div>
 
       <br />
+      <Chatbot />
       <Footer />
     </>
   );

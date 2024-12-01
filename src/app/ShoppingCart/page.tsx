@@ -5,7 +5,7 @@ import Footer from '../components/Footer/Footer'
 import ShoppingCart from '../components/ShoppingCart/ShoppingCart'
 import CheckoutSummary from '../components/CheckoutSummary/CheckoutSummary'
 import Slider from '../components/Slider/Slider'
-
+import Chatbot from "../components/Chatbot/Chatbot";
 
 const page = () => {
     return (
@@ -25,6 +25,7 @@ const page = () => {
                 <Slider />
 
                 <Footer />
+                <Chatbot />
             </div>
         </>
     )
