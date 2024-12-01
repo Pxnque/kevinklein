@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar/Navbar'
 import Footer from '../components/Footer/Footer'
-
+import Chatbot from "../components/Chatbot/Chatbot";
 interface FAQItem {
     question: string;
     answer: JSX.Element;
@@ -225,6 +225,7 @@ const page = () => {
             ))}
           </ul>
       </div>
+      <Chatbot/>
     </div>
         <Footer/>
     </div>

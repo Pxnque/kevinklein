@@ -9,6 +9,7 @@ import PocketBase from "pocketbase";
 // Instancia de PocketBase
 const pb = new PocketBase("https://kevinklein.pockethost.io");
 
+
 interface Reseña {
   id: string;
   producto: string;
