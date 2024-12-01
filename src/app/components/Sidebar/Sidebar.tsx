@@ -1,16 +1,91 @@
 // components/Sidebar.tsx
 import React from 'react';
+import { useEffect, useState } from 'react';
+import pb from '@/app/lib/pocketbase'; // Importa tu cliente de PocketBase
 import ProductCardDiscount from '../CardDiscount/ProductCardDiscount';
 import { FaArrowDown, FaSortDown, FaSort, FaAngleDown } from 'react-icons/fa';
 
+// Tipo para las categorías
+interface Categoria {
+    id: string;
+    nombre: string;
+}
 
-const Sidebar = () => {
+// Tipo para los productos
+interface Producto {
+    id: string;
+    nombre: string;
+    url: string;
+    precio: number;
+    descuento: number;
+}
+
+// Props del Sidebar
+interface SidebarProps {
+    productos: Producto[];
+    categorias: Categoria[];
+    onFilterChange: (selectedCategories: string[], selectedPriceRanges: string[], rating: number | null) => void; // Función para manejar filtros
+    onShowPopular: () => void;
+    onSearch: (searchTerm: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange, onShowPopular, onSearch }) => {
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
+    const [selectedRating, setSelectedRating] = useState<number | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Manejar el cambio en la barra de búsqueda
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        onSearch(value); // Comunicar el término al padre
+    };
+
+    // Seleccionar 3 productos aleatorios con descuento > 0
+    const productosConDescuento = productos
+        .filter((producto) => producto.descuento > 0)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+
+    // Manejar cambios en las categorías seleccionadas
+    const handleCategoryChange = (categoriaId: string, checked: boolean) => {
+        const updatedCategories = checked
+            ? [...selectedCategories, categoriaId]
+            : selectedCategories.filter((id) => id !== categoriaId);
+
+        setSelectedCategories(updatedCategories);
+        onFilterChange(updatedCategories, selectedPriceRanges, selectedRating); // Comunicar cambios
+    };
+
+    // Manejar cambios en los rangos de precios seleccionados
+    const handlePriceChange = (priceRange: string, checked: boolean) => {
+        const updatedPriceRanges = checked
+            ? [...selectedPriceRanges, priceRange]
+            : selectedPriceRanges.filter((range) => range !== priceRange);
+
+        setSelectedPriceRanges(updatedPriceRanges);
+        onFilterChange(selectedCategories, updatedPriceRanges, selectedRating); // Comunicar cambios
+    };
+
+    // Manejar cambios en la calificación seleccionada
+    const handleRatingChange = (rating: number) => {
+        setSelectedRating(rating);
+        onFilterChange(selectedCategories, selectedPriceRanges, rating); // Comunicar calificación al padre
+    };
+
+    const handleShowPopular = () => {
+        onShowPopular(); // Llama a la función pasada desde el padre
+    };
+
     return (
         <aside className="w-full p-4 bg-white shadow-md text-black  border-r border-gray-300 min-h-screen overflow-y-auto flex flex-col space-y-6">
             {/* Search Bar */}
             <div className="relative mb-4">
                 <input
                     type="text"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                     placeholder="Buscar..."
                     className="w-full px-4 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
                 />
@@ -22,138 +97,149 @@ const Sidebar = () => {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a7 7 0 100 14 7 7 0 000-14zm0 0l6 6" />
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M11 4a7 7 0 100 14 7 7 0 000-14zm0 0l6 6"
+                        />
                     </svg>
                 </button>
             </div>
-
             <h2 className="font-bold text-2xl mb-2">Filtros</h2>
 
             {/* Categorías */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
                 <ul className="mt-2 space-y-2">
-                    <li className="flex items-center"><input type="checkbox" id="playeras" className="mr-2" /><label htmlFor="playeras">Playeras</label></li>
-                    <li className="flex items-center"><input type="checkbox" id="camisas" className="mr-2" /><label htmlFor="camisas">Camisas</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="pantalones" className='mr-2' /><label htmlFor="pantalones">Pantalones</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="shorts" className='mr-2' /><label htmlFor="shorts">Shorts</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="trajes" className='mr-2' /><label htmlFor="trajes">Trajes y Blazers</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="sudaderas" className='mr-2' /><label htmlFor="sudaderas">Sudaderas y suéteres</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="chamarras" className='mr-2' /><label htmlFor="chamarras">Chamarras y abrigos</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="ropa-deportiva" className='mr-2' /><label htmlFor="ropa-deportiva">Ropa deportiva</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="ropa-interior" className='mr-2' /><label htmlFor="ropa-interior">Ropa interior</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="zapatos" className='mr-2' /><label htmlFor="zapatos">Zapatos</label></li>
-                    <li className='flex items-center'><input type="checkbox" id="accesorios" className='mr-2' /><label htmlFor="accesorios">Accesorios</label></li>
+                    {categorias.length > 0 ? (
+                        categorias.map((categoria) => (
+                            <li key={categoria.id} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id={categoria.nombre.toLowerCase().replace(/\s+/g, '-')}
+                                    className="mr-2"
+                                    onChange={(e) => handleCategoryChange(categoria.id, e.target.checked)}
+                                />
+                                <label htmlFor={categoria.nombre.toLowerCase().replace(/\s+/g, '-')}>
+                                    {categoria.nombre}
+                                </label>
+                            </li>
+                        ))
+                    ) : (
+                        <p>Cargando categorías...</p>
+                    )}
                 </ul>
-                <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
+                {/* <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a> */}
             </div>
             <hr className="border-gray-400 my-2" />
 
             {/* Precio */}
-            <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+            <div className="space-y-4 mt-6">
+                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
-                        <input type="checkbox" id="menos50" className="mr-2" />
-                        <label htmlFor="menos50">Menos de $50</label>
+                        <input
+                            type="checkbox"
+                            id="menos100"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('menos100', e.target.checked)}
+                        />
+                        <label htmlFor="menos100">Menos de $100</label>
                     </li>
                     <li className="flex items-center">
-                        <input type="checkbox" id="100-250" className="mr-2" />
+                        <input
+                            type="checkbox"
+                            id="100-250"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('100-250', e.target.checked)}
+                        />
                         <label htmlFor="100-250">$100 - $250</label>
                     </li>
                     <li className="flex items-center">
-                        <input type="checkbox" id="250-350" className="mr-2" />
+                        <input
+                            type="checkbox"
+                            id="250-350"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('250-350', e.target.checked)}
+                        />
                         <label htmlFor="250-350">$250 - $350</label>
                     </li>
                     <li className="flex items-center">
-                        <input type="checkbox" id="mas500" className="mr-2" />
+                        <input
+                            type="checkbox"
+                            id="mas500"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('mas500', e.target.checked)}
+                        />
                         <label htmlFor="mas500">Mayor de $500</label>
                     </li>
                 </ul>
-                <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
             <hr className="border-gray-400 my-2" />
 
             {/* Calificación */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
+                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h3>
                 <ul className="mt-2 space-y-2">
-                    {[5, 4, 3, 2, 1].map((rating) => (
+                    {[5, 4, 3, 2, 1, 0].map((rating) => (
                         <li key={rating} className="flex items-center">
-                            <input type="radio" name="rating" className="mr-2" />
+                            <input
+                                type="radio"
+                                name="rating"
+                                className="mr-2"
+                                onChange={() => handleRatingChange(rating)}
+                            />
                             <div className="flex">
-                                {Array(rating).fill(0).map((_, index) => (
-                                    <span key={index} className="text-yellow-500">&#9733;</span>
-                                ))}
-                                {Array(5 - rating).fill(0).map((_, index) => (
-                                    <span key={index} className="text-gray-300">&#9733;</span>
-                                ))}
+                                {Array(rating)
+                                    .fill(0)
+                                    .map((_, index) => (
+                                        <span key={index} className="text-yellow-500">&#9733;</span>
+                                    ))}
+                                {Array(5 - rating)
+                                    .fill(0)
+                                    .map((_, index) => (
+                                        <span key={index} className="text-gray-300">&#9733;</span>
+                                    ))}
                             </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <hr className="border-gray-400 my-2" />
+
+            {/* Color NOS deshicimos del color*/}
+            {/* <div className="space-y-4">
+                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
+                <ul className="mt-2 space-y-2">
+                    {[
+                        { id: "blanco", label: "Blanco", color: "bg-gray-200" },
+                        { id: "negro", label: "Negro", color: "bg-black" },
+                        { id: "azul", label: "Azul", color: "bg-blue-500" },
+                        { id: "cafe", label: "Café", color: "bg-yellow-700" },
+                        { id: "rojo", label: "Rojo", color: "bg-red-500" },
+                        { id: "naranja", label: "Naranja", color: "bg-orange-500" },
+                        { id: "amarillo", label: "Amarillo", color: "bg-yellow-500" },
+                    ].map(({ id, label, color }) => (
+                        <li key={id} className="flex items-center">
+                            <input type="checkbox" id={id} className="mr-2" />
+                            <label htmlFor={id} className="inline-flex items-center">
+                                <span className={`w-4 h-4 ${color} inline-block mr-2`}></span> {label}
+                            </label>
                         </li>
                     ))}
                 </ul>
                 <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
             </div>
-            <hr className="border-gray-400 my-2" />
-
-            {/* Color */}
-            <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h3>
-                <ul className="mt-2 space-y-2">
-                    <li className="flex items-center">
-                        <input type="checkbox" id="blanco" className="mr-2" />
-                        <label htmlFor="blanco">
-                            <span className="w-4 h-4 bg-gray-200 inline-block mr-2"></span> Blanco
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="negro" className="mr-2" />
-                        <label htmlFor="negro" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-black inline-block mr-2"></span> Negro
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="azul" className="mr-2" />
-                        <label htmlFor="azul" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-blue-500 inline-block mr-2"></span> Azul
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="cafe" className="mr-2" />
-                        <label htmlFor="cafe" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-yellow-700 inline-block mr-2"></span> Café
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="rojo" className="mr-2" />
-                        <label htmlFor="rojo" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-red-500 inline-block mr-2"></span> Rojo
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="naranja" className="mr-2" />
-                        <label htmlFor="naranja" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-orange-500 inline-block mr-2"></span> Naranja
-                        </label>
-                    </li>
-                    <li className="flex items-center">
-                        <input type="checkbox" id="amarillo" className="mr-2" />
-                        <label htmlFor="amarillo" className="inline-flex items-center">
-                            <span className="w-4 h-4 bg-yellow-500 inline-block mr-2"></span> Amarillo
-                        </label>
-                    </li>
-                </ul>
-                <a href="#" className="text-blue-600 mt-4 inline-block">Mostrar más</a>
-            </div>
-            <hr className="border-gray-400 my-2" />
+            <hr className="border-gray-400 my-2" /> */}
 
             {/* Populares */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
                 <ul className="mb-8 flex flex-wrap gap-2">
-                    {['Top', 'Fashion', 'Hombre', 'Colección', 'Colección de hombre', 'Nuevo', 'Ropa', 'Lo mejor', 'Galería', 'Ropa de hombre'].map((item, index) => (
+                    {['Top', 'Fashion', 'Colección', 'Nuevo', 'Lo mejor', 'Galería'].map((item, index) => (
                         <li key={index}>
-                            <button className="text-center bg-white py-2 px-4 shadow-sm hover:bg-gray-100">
+                            <button className="text-center bg-white py-2 px-4 shadow-sm hover:bg-gray-100" onClick={handleShowPopular}>
                                 {item}
                             </button>
                         </li>
@@ -164,13 +250,11 @@ const Sidebar = () => {
 
             {/* Productos nuevos */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Productos nuevos <FaAngleDown className='-left-full mt-2 w-3 h-3'/></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Ofertas <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
                 <div className="space-y-4">
-                    <ProductCardDiscount />
-                    <ProductCardDiscount />
-                    <ProductCardDiscount />
+                    <ProductCardDiscount productos={productosConDescuento} />
                 </div>
-                <button className="mt-4 text-blue-500 hover:underline">Mostrar más</button>
+                {/* <button className="mt-4 text-blue-500 hover:underline">Mostrar más</button> */}
             </div>
         </aside>
     );
