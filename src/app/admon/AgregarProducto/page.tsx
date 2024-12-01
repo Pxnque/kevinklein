@@ -13,11 +13,12 @@ export default function AgregarProductoPage() {
     descripcion: "",
     precio: "",
     descuento: "",
-    tallas: [] as string[],
     cantidad: "",
+    tallas: [] as string[],
     id_categoria: "",
     fotos: [] as File[],
   });
+
   const [categorias, setCategorias] = useState<{ id: string; nombre: string }[]>([]);
   const [errors, setErrors] = useState({ general: "" });
 
@@ -29,7 +30,7 @@ export default function AgregarProductoPage() {
         });
 
         setCategorias(response.map((cat) => ({ id: cat.id, nombre: cat.nombre })));
-        setErrors({ general: "" }); // Elimina cualquier error relacionado con categorías
+        setErrors({ general: "" });
       } catch (error) {
         console.error("Error al obtener categorías:", error);
         setErrors({ general: "No se pudieron cargar las categorías." });
@@ -65,7 +66,7 @@ export default function AgregarProductoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { nombre, descripcion, precio, descuento, tallas, cantidad, id_categoria, fotos } =
+    const { nombre, descripcion, precio, descuento, cantidad, tallas, id_categoria, fotos } =
       formData;
 
     if (!nombre || !descripcion || !precio || !cantidad || !id_categoria || tallas.length === 0) {
@@ -80,8 +81,8 @@ export default function AgregarProductoPage() {
     data.append("descuento", descuento || "0"); // Descuento opcional
     data.append("cantidad", cantidad);
     data.append("id_categoria", id_categoria);
-    tallas.forEach((talla) => data.append("tallas[]", talla)); // Asegura que el array de tallas se envíe correctamente
-    fotos.forEach((foto) => data.append("fotos", foto)); // Añadir fotos al FormData
+    tallas.forEach((talla) => data.append("tallas[]", talla));
+    fotos.forEach((foto) => data.append("fotos", foto));
 
     try {
       const response = await pb.collection("productos").create(data);
@@ -92,8 +93,8 @@ export default function AgregarProductoPage() {
         descripcion: "",
         precio: "",
         descuento: "",
-        tallas: [],
         cantidad: "",
+        tallas: [],
         id_categoria: "",
         fotos: [],
       });
@@ -122,6 +123,7 @@ export default function AgregarProductoPage() {
                 )}
 
                 <form onSubmit={handleSubmit}>
+                  {/* Nombre */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
                     <input
@@ -134,6 +136,7 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
+                  {/* Descripción */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Descripción
@@ -147,6 +150,7 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
+                  {/* Precio y Descuento */}
                   <div className="grid grid-cols-2 gap-6 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
@@ -176,6 +180,20 @@ export default function AgregarProductoPage() {
                     </div>
                   </div>
 
+                  {/* Cantidad */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
+                    <input
+                      type="number"
+                      name="cantidad"
+                      value={formData.cantidad}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+                      placeholder="Ingrese la cantidad disponible"
+                    />
+                  </div>
+
+                  {/* Fotos */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
                     <input
@@ -187,6 +205,7 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
+                  {/* Tallas */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Tallas</label>
                     <div className="flex space-x-4">
@@ -204,6 +223,7 @@ export default function AgregarProductoPage() {
                     </div>
                   </div>
 
+                  {/* Categoría */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
                     <select
@@ -221,6 +241,7 @@ export default function AgregarProductoPage() {
                     </select>
                   </div>
 
+                  {/* Botones */}
                   <div className="flex justify-end">
                     <button
                       type="submit"
