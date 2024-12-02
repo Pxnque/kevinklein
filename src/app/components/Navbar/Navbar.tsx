@@ -1,3 +1,4 @@
+"use client"
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
@@ -7,12 +8,12 @@ import PocketBase from 'pocketbase';
 import ImagenLogin from '@/app/public/img/logo.png';
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { PiSignOutFill } from "react-icons/pi";
-import { useRouter } from 'next/router';
+
 
 
 // Singleton PocketBase instance
 const pb = new PocketBase('https://kevinklein.pockethost.io');
-const router = useRouter();
+
 // Cached user state
 let cachedUser = {
   isAuthenticated: false,
@@ -98,16 +99,7 @@ const Navbar = () => {
   };
 
   const baseUrl = 'https://kevinklein.pockethost.io/api/files/users/';
-  const clickAdmin = () => {
-    router.push('/admon/Dashboard');
-  }
-  const clickDireccion = () => {
-    router.push('/Direcciones');
-  }
-  const clickPerfil = () => {
-    router.push('/Perfil');
-  }
-
+ 
   return (
     <header className="bg-black">
       <nav className="flex justify-between items-center w-[92%] mx-auto">
@@ -179,7 +171,7 @@ const Navbar = () => {
                 >
                   <li className='flex flex-wrap hover:bg-gray-200'>
                     <div className='mt-2 ml-2'>
-                    <IoPersonOutline onClick={clickPerfil} size={24} className="text-black text-center justify-center" />
+                    <IoPersonOutline href='/profile' size={24} className="text-black text-center justify-center" />
                     </div>
                     <Link
                       href="/profile"
@@ -190,7 +182,7 @@ const Navbar = () => {
                   </li>
                   <li className='flex flex-wrap hover:bg-gray-200'>
                   <div className='mt-2 ml-2'>
-                  <BsHouse onClick={clickDireccion} size={24} className="text-black text-center justify-center"/>
+                  <BsHouse href='/configuration' size={24} className="text-black text-center justify-center"/>
                   </div>
 
                     <Link
@@ -203,7 +195,7 @@ const Navbar = () => {
                   {userData?.role === 'admin' && (
                     <li className='flex hover:bg-gray-200'>
                       <div className='mt-2 ml-2'>
-                      <MdOutlineAdminPanelSettings onClick={clickAdmin} size={24} className="text-black text-center justify-center"/>
+                      <MdOutlineAdminPanelSettings href='/admon/Dashboard' size={24} className="text-black text-center justify-center"/>
                       </div>
                       <Link
                         href="/admon/Dashboard"
