@@ -9,6 +9,7 @@ interface Producto {
   id: string;
   nombre: string;
   url: string;
+  descripcion: string;
   precio: number;
   descuento: number;
 }
@@ -21,8 +22,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) => {
   const router = useRouter();
-  const { id, nombre, url, precio, descuento } = productData;
-
+  const { id, nombre, url, descripcion, precio, descuento } = productData;
+  console.log(productData);
   const handleAddToCart = () => {
     const existingCart = localStorage.getItem('cart');
     const cartItems = existingCart ? JSON.parse(existingCart) : [];
@@ -99,15 +100,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           </div>
           {/* Precio */}
           <p className="text-2xl font-bold text-black my-4">${(precio * (1 - descuento)).toFixed(2)} MXN</p>
-          <hr className="border-black mb-20" />
           <hr className="border-black mb-2" />
+          <p className='text-gray-700'>{descripcion}</p>
+          <hr className="border-black mb-2" />
+          <p className='font-mono'>Acciones rapidas</p>
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-start my-8">
+        <div className="flex justify-start my-3">
           <button
             onClick={handleAddToCart}
-            className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
+            className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
           >
             <FaShoppingCart />
           </button>

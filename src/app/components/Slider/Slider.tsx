@@ -69,10 +69,12 @@ export default function Slider() {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {productos.slice(0, 12).map((producto, index) => (
+              
               <div
                 key={producto.id}
                 className="w-1/4 flex-shrink-0 p-2 hover:scale-105 transition-transform duration-300"
               >
+                <a href={`/productos/${producto.id}`}>
                 <div className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-200 transition-colors">
                   <Image
                     src={
@@ -88,7 +90,9 @@ export default function Slider() {
                   <p className="mt-2 text-black">{producto.nombre}</p>
                   <p className="text-black">${producto.precio} MXN</p>
                 </div>
+                </a>
               </div>
+              
             ))}
           </div>
         </div>

@@ -63,6 +63,7 @@ const HomePage: React.FC = () => {
           id: producto.id,
           nombre: producto.nombre,
           url: producto.fotos && producto.fotos[0] ? pb.files.getURL(producto, producto.fotos[0]) : "",
+          descripcion: producto.descripcion,
           precio: producto.precio,
           descuento: producto.descuento,
           categoriaId: producto.id_categoria,
@@ -234,7 +235,7 @@ const HomePage: React.FC = () => {
             ) : filteredProductos.length > 0 ? (
               <div className="grid grid-cols-2 gap-6">
                 {filteredProductos.map((producto) => (
-                  <a href={`/productos/${producto.id}`} >
+                  <a href={`/productos/${producto.id}`} className="hover:scale-105 transition duration-500">
                     <Card key={producto.id} productData={producto} rating={producto.rating} />
                   </a>
                 ))}
