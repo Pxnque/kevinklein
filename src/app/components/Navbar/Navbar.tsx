@@ -182,7 +182,7 @@ const Navbar = () => {
                   {userData?.role === 'admin' && (
                     <li>
                       <Link
-                        href="/admon"
+                        href="/admon/Dashboard"
                         className="block px-4 py-2 hover:bg-gray-200"
                       >
                         Admin Panel
