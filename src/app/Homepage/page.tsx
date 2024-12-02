@@ -234,7 +234,9 @@ const HomePage: React.FC = () => {
             ) : filteredProductos.length > 0 ? (
               <div className="grid grid-cols-2 gap-6">
                 {filteredProductos.map((producto) => (
-                  <Card key={producto.id} productData={producto} rating={producto.rating} />
+                  <a href={`/productos/${producto.id}`} >
+                    <Card key={producto.id} productData={producto} rating={producto.rating} />
+                  </a>
                 ))}
               </div>
             ) : (
