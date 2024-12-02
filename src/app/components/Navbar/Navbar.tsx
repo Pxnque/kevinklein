@@ -5,49 +5,69 @@ import { IoPersonOutline, IoSearchSharp, IoCartOutline } from "react-icons/io5";
 import PocketBase from 'pocketbase';
 import ImagenLogin from '@/app/public/img/logo.png';
 
+// Singleton PocketBase instance
+const pb = new PocketBase('https://kevinklein.pockethost.io');
+
+// Cached user state
+let cachedUser = {
+  isAuthenticated: false,
+  data: null,
+};
+
 const Navbar = () => {
-  const pb = new PocketBase('https://kevinklein.pockethost.io');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [id, setId] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(cachedUser.isAuthenticated);
+  const [userData, setUserData] = useState(cachedUser.data);
+  const [loading, setLoading] = useState(!cachedUser.data);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userData, setUserData] = useState<{ avatar: string, username: string, role: string }>({ avatar: '', username: '', role: '' });
-  const [loading, setLoading] = useState(true); // Loading state for user data
+
   const dropdownRef = useRef<HTMLUListElement>(null);
   const profileIconRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
+      if (cachedUser.data) {
+        // If cached data exists, use it
+        setIsLoggedIn(true);
+        setUserData(cachedUser.data);
+        setLoading(false);
+        return;
+      }
+
       try {
         const isAuthenticated = pb.authStore.isValid;
 
-        setIsLoggedIn(isAuthenticated);
-
         if (isAuthenticated && pb.authStore.model) {
           const userId = pb.authStore.model.id;
-          setId(userId);
-
-          // Fetch user data
           const record = await pb.collection('users').getOne(userId);
 
-          setUserData({
-            avatar: record.avatar || '', // Set the avatar
-            username: record.username || '', // Set the username
-            role: record.rol || '', // Set the user role
-          });
+          const userDetails = {
+            avatar: record.avatar || '',
+            username: record.username || '',
+            role: record.rol || '',
+          };
 
-          console.log(record.username);
-          console.log(record.avatar);
-          console.log(record.rol);
+          cachedUser = {
+            isAuthenticated: true,
+            data: userDetails,
+          };
+
+          setIsLoggedIn(true);
+          setUserData(userDetails);
+        } else {
+          cachedUser = { isAuthenticated: false, data: null };
+          setIsLoggedIn(false);
         }
       } catch (error) {
         console.error('Error checking authentication or fetching user data:', error);
+        cachedUser = { isAuthenticated: false, data: null };
+        setIsLoggedIn(false);
       } finally {
-        setLoading(false); // Ensure loading is stopped
+        setLoading(false);
       }
     };
 
     checkAuth();
-  }, [pb]);
+  }, []);
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -124,17 +144,17 @@ const Navbar = () => {
                 className="text-white flex items-center gap-2"
               >
                 {loading ? (
-                  <span>Loading...</span> // Show loading text until data is fetched
+                  <span>Loading...</span>
                 ) : (
                   <>
-                    {userData.avatar && (
+                    {userData?.avatar && (
                       <img
-                        src={`${baseUrl}${id}/${userData.avatar}`}
+                        src={`${baseUrl}${pb.authStore.model?.id}/${userData.avatar}`}
                         alt="user avatar"
                         className="rounded-full w-6 h-6"
                       />
                     )}
-                    <p>{userData.username || 'Loading...'}</p>
+                    <p>{userData?.username || 'Loading...'}</p>
                   </>
                 )}
               </button>
@@ -159,7 +179,7 @@ const Navbar = () => {
                       Configuration
                     </Link>
                   </li>
-                  {userData.role === 'admin' && (
+                  {userData?.role === 'admin' && (
                     <li>
                       <Link
                         href="/admon"
@@ -175,6 +195,7 @@ const Navbar = () => {
                         pb.authStore.clear();
                         setIsLoggedIn(false);
                         setIsDropdownOpen(false);
+                        cachedUser = { isAuthenticated: false, data: null };
                       }}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-200"
                     >

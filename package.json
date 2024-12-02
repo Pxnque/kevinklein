@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^3.0.0",
+    "@stripe/stripe-js": "^5.2.0",
     "axios": "^1.7.8",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.460.0",
@@ -21,6 +23,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
+    "stripe": "^17.4.0",
     "swiper": "^11.1.14",
     "uuid": "^11.0.3"
   },
