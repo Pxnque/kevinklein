@@ -14,7 +14,7 @@ const CheckoutPage = ({amount}: {amount:number}) => {
     const [loading,setLoading] = useState(false);
 
     useEffect(() => {
-        fetch('/api/chat/create-payment-intent',{
+        fetch('/api/create-payment-intent',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,26 +39,51 @@ const CheckoutPage = ({amount}: {amount:number}) => {
             setLoading(false);
             return;
         }
-        const result = await stripe.confirmCardPayment(clientSecret,{
-            payment_method: {
-                card: elements.getElement(PaymentElement),
-            },
-        });
-        if(result.error){
-            setErrorMessage(result.error.message);
-            setLoading(false);
-        }else{
-            setErrorMessage(undefined);
-            setLoading(false);
-        }
+       const {error} = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: {
+            return_url: `http:localhost:3000/payment-success?amount=${amount}`,
+       },
+    });
+
+    if(error){
+        setErrorMessage(error.message);
+        console.log(error);
+    }else{
+        //el ui se cierra y muestra animacion
+        //se redirige a la pagina de exito return_url
     }
+    setLoading(false);
+    };
+    if (!clientSecret || !stripe || !elements) {
+        return (
+          <div className="flex items-center justify-center">
+            <div
+              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+              role="status"
+            >
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                Loading...
+              </span>
+            </div>
+          </div>
+        );
+      }
+
+    
 
     return (
         <form onSubmit={handleSubmit} className='mx-3'>
             {clientSecret && <PaymentElement/>}
 
             {errorMesaage && <div>{errorMesaage}</div>}
-            <button>Pagar</button>
+            <button
+            disabled={!stripe || loading}
+            className='text-white w-full p-5 bg-black mt-2 rounded-md font-bold
+            disabled:opacity-50 disabled:animate-pulse'>
+              {!loading ? `Pagar $${amount} `: 'Procesando...'}
+            </button>
         </form>
     );
 }

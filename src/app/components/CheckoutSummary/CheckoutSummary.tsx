@@ -4,29 +4,39 @@ import PocketBase from "pocketbase";
 import { useRouter } from "next/navigation";
 import CheckoutPage from "@/app/components/CheckoutPage/CheckoutPage";
 import convertToSubcurrency from "@/app/lib/convertToSubcurrency";
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
+
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
 const CheckoutSummary = () => {
   const pb = new PocketBase("https://kevinklein.pockethost.io");
   const router = useRouter();
 
-  const [items, setItems] = useState<any[]>([]); // State to store cart items
+  const [isMounted, setIsMounted] = useState(false); // State to handle hydration
+  const [items, setItems] = useState<any[]>([]);
   const [subtotal, setSubtotal] = useState<number>(0);
   const [discounts, setDiscounts] = useState<number>(0);
-  const [isCheckoutComplete, setIsCheckoutComplete] = useState(false); // State to switch components
-  const [isTransitioning, setIsTransitioning] = useState(false); // State for animation
-  const [isLoggedIn, setIsLoggedIn] = useState(pb.authStore.isValid); // Check if the user is logged in
-  const [shippingAddresses, setShippingAddresses] = useState<any[]>([]); // State for shipping addresses
+  const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(pb.authStore.isValid);
+  const [shippingAddresses, setShippingAddresses] = useState<any[]>([]);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
+
   const shipping = "Calcular";
+
+  // Handle client-only rendering
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Load cart data and calculate subtotal and discounts
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isMounted || !isLoggedIn) return;
 
     const cartItems = localStorage.getItem("cart");
     if (cartItems) {
@@ -46,49 +56,72 @@ const CheckoutSummary = () => {
       setSubtotal(calculatedSubtotal);
       setDiscounts(calculatedDiscounts);
     }
-  }, [isLoggedIn]);
+  }, [isMounted, isLoggedIn]);
 
-  const total = subtotal - discounts; // Calculate total
+  // Fetch shipping addresses
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (!isMounted || !isLoggedIn) return;
+
+      try {
+        const records = await pb.collection("shippingaddresses").getFullList({
+          filter: `id_user="${pb.authStore.model?.id}"`,
+        });
+        setShippingAddresses(records);
+      } catch (error) {
+        console.error("Error fetching shipping addresses:", error);
+      } finally {
+        setIsLoadingAddresses(false);
+      }
+    };
+
+    fetchAddresses();
+  }, [isMounted, isLoggedIn]);
+
+  const total = subtotal - discounts;
 
   const handleCheckout = async () => {
     if (!isLoggedIn) {
       alert("You should log in to buy.");
-      router.push("/auth/Login"); // Redirect to the login page
+      router.push("/auth/Login");
       return;
     }
 
-    // Fetch shipping addresses after completing the checkout
-    try {
-      const records = await pb.collection("shippingaddresses").getFullList({
-        filter: `id_user="${pb.authStore.model.id}"`, // Adjust the filter based on your PocketBase schema
-      });
-
-      setShippingAddresses(records); // Store the fetched addresses
-    } catch (error) {
-      console.error("Error fetching shipping addresses:", error);
-    }
-
-    // Start the transition animation
     setIsTransitioning(true);
 
-    // Wait for the animation to complete, then show the next component
+    // Simulate checkout process with a timeout
     setTimeout(() => {
       setIsTransitioning(false);
       setIsCheckoutComplete(true);
-    }, 500); // Duration matches the CSS animation
+    }, 500);
   };
+
+  if (!isMounted) {
+    // Prevent rendering during SSR
+    return null;
+  }
 
   if (!isLoggedIn) {
     return (
       <div className="container mx-auto p-12 border border-gray-400 max-w-md text-center">
-        <h2 className="text-xl font-bold mb-4">Para continuar con la compra es necesario que inicies sesión.</h2>
+        <h2 className="text-xl font-bold mb-4">
+          Para continuar con la compra es necesario que inicies sesión.
+        </h2>
         <button
           onClick={() => router.push("/auth/Login")}
           className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600"
         >
           Iniciar sesión
         </button>
-        <p className="text-sm font-medium text-center text-gray-500 dark:text-gray-300 pt-3">¿No tienes una cuenta?<a href="/auth/Register" className="text-blue-700 hover:underline dark:text-blue-500">Registrate</a></p>
+        <p className="text-sm font-medium text-center text-gray-500 dark:text-gray-300 pt-3">
+          ¿No tienes una cuenta?
+          <a
+            href="/auth/Register"
+            className="text-blue-700 hover:underline dark:text-blue-500"
+          >
+            Registrate
+          </a>
+        </p>
       </div>
     );
   }
@@ -103,7 +136,7 @@ const CheckoutSummary = () => {
 
   return (
     <div
-      className={`container mx-auto p-12 border border-gray-400  w-max transition-transform duration-500 ${
+      className={`container mx-auto p-12 border border-gray-400 w-max transition-transform duration-500 ${
         isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
       }`}
     >
@@ -126,7 +159,9 @@ const CheckoutSummary = () => {
           <div className="border-t border-gray-300 my-2"></div>
           <div className="mb-4">
             <span className="font-semibold text-xl">Total</span>
-            <span className="float-right text-lg font-bold">${total.toFixed(2)}</span>
+            <span className="float-right text-lg font-bold">
+              ${total.toFixed(2)}
+            </span>
           </div>
           <button
             onClick={handleCheckout}
@@ -139,65 +174,72 @@ const CheckoutSummary = () => {
           </button>
         </div>
       ) : (
-  <div className="text-center flex flex-row w-full" id="shipping">
-    <div>
-    <div className="mt-6">
-    <h3 className="text-lg font-semibold mb-4">Direcciones de envío:</h3>
-    {shippingAddresses.length > 0 ? (
-      <div className="space-y-4">
-        {shippingAddresses.map((address, index) => (
-          <div
-            key={index}
-            className="flex items-start p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-lg transition-shadow"
-          >
-            <input
-              type="radio"
-              name="selectedAddress"
-              id={`address-${index}`}
-              className="mt-1 mr-3"
-            />
-            <label htmlFor={`address-${index}`} className="flex-grow text-left">
-              <p className="font-medium text-lg">
-                {address.nombre_direccion}
-              </p>
-              <p className="text-gray-500">
-                {address.direccion}, {address.ciudad}, {address.estado}, {address.pais}, {address.codigo_postal}
-              </p>
-            </label>
+        <div className="text-center flex flex-row w-full" id="shipping">
+          <div>
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-4">
+                Direcciones de envío:
+              </h3>
+              {isLoadingAddresses ? (
+                <p>Cargando direcciones...</p>
+              ) : shippingAddresses.length > 0 ? (
+                <div className="space-y-4">
+                  {shippingAddresses.map((address, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-lg transition-shadow"
+                    >
+                      <input
+                        type="radio"
+                        name="selectedAddress"
+                        id={`address-${index}`}
+                        className="mt-1 mr-3"
+                      />
+                      <label
+                        htmlFor={`address-${index}`}
+                        className="flex-grow text-left"
+                      >
+                        <p className="font-medium text-lg">
+                          {address.nombre_direccion}
+                        </p>
+                        <p className="text-gray-500">
+                          {address.direccion}, {address.ciudad},{" "}
+                          {address.estado}, {address.pais},{" "}
+                          {address.codigo_postal}
+                        </p>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">
+                  No se encontraron direcciones de envío.
+                </p>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
-    ) : (
-      <p className="text-gray-500">No se encontraron direcciones de envío.</p>
-    )}
-  </div>
-    </div>
-    <div className="w-max">
-      <div className="mb-4 px-12 w-max">
-        <span className="font-semibold text-xl">Total</span>
-        <span className="float-right text-lg font-bold">${total.toFixed(2)}</span>
-        <Elements
-         stripe={stripePromise}
-         options={{
-          mode: 'payment',
-          amount: convertToSubcurrency(Number(total.toFixed(2))),
-          currency: 'mxn',
-         }}>
-          <CheckoutPage amount={Number(total.toFixed(2))} />
-        </Elements>
-      </div>
-      
-    </div>
-  
-  
-</div>
+          <div className="w-max">
+            <div className="mb-4 px-12 w-max">
+              <span className="font-semibold text-xl">Total</span>
+              <span className="float-right text-lg font-bold">
+                ${total.toFixed(2)}
+              </span>
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  mode: "payment",
+                  amount: convertToSubcurrency(Number(total.toFixed(2))),
+                  currency: "mxn",
+                }}
+              >
+                <CheckoutPage amount={Number(total.toFixed(2))} />
+              </Elements>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default CheckoutSummary;
-/*
-<h2 className="text-2xl font-bold mb-4">¡Gracias por tu compra!</h2>
-<p className="text-gray-600">Hemos recibido tu pedido y lo estamos procesando.</p>
-*/
