@@ -2,12 +2,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { IoPersonOutline, IoSearchSharp, IoCartOutline } from "react-icons/io5";
+import { BsHouse } from "react-icons/bs";
 import PocketBase from 'pocketbase';
 import ImagenLogin from '@/app/public/img/logo.png';
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import { PiSignOutFill } from "react-icons/pi";
+import { useRouter } from 'next/router';
+
 
 // Singleton PocketBase instance
 const pb = new PocketBase('https://kevinklein.pockethost.io');
-
+const router = useRouter();
 // Cached user state
 let cachedUser = {
   isAuthenticated: false,
@@ -93,6 +98,15 @@ const Navbar = () => {
   };
 
   const baseUrl = 'https://kevinklein.pockethost.io/api/files/users/';
+  const clickAdmin = () => {
+    router.push('/admon/Dashboard');
+  }
+  const clickDireccion = () => {
+    router.push('/Direcciones');
+  }
+  const clickPerfil = () => {
+    router.push('/Perfil');
+  }
 
   return (
     <header className="bg-black">
@@ -163,33 +177,51 @@ const Navbar = () => {
                   ref={dropdownRef}
                   className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg z-50"
                 >
-                  <li>
+                  <li className='flex flex-wrap hover:bg-gray-200'>
+                    <div className='mt-2 ml-2'>
+                    <IoPersonOutline onClick={clickPerfil} size={24} className="text-black text-center justify-center" />
+                    </div>
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 hover:bg-gray-200"
+                      className="block px-4 pt-3 hover:bg-gray-200"
                     >
-                      My Profile
+                      Mi perfil
                     </Link>
                   </li>
-                  <li>
+                  <li className='flex flex-wrap hover:bg-gray-200'>
+                  <div className='mt-2 ml-2'>
+                  <BsHouse onClick={clickDireccion} size={24} className="text-black text-center justify-center"/>
+                  </div>
+
                     <Link
                       href="/configuration"
-                      className="block px-4 py-2 hover:bg-gray-200"
+                      className="block px-4 pt-3 hover:bg-gray-200"
                     >
-                      Configuration
+                      Mis direcciones
                     </Link>
                   </li>
                   {userData?.role === 'admin' && (
-                    <li>
+                    <li className='flex hover:bg-gray-200'>
+                      <div className='mt-2 ml-2'>
+                      <MdOutlineAdminPanelSettings onClick={clickAdmin} size={24} className="text-black text-center justify-center"/>
+                      </div>
                       <Link
                         href="/admon/Dashboard"
-                        className="block px-4 py-2 hover:bg-gray-200"
+                        className="block px-4 pt-3 hover:bg-gray-200 text-wrap"
                       >
-                        Admin Panel
+                        Panel de administración
                       </Link>
                     </li>
                   )}
-                  <li>
+                  <li className='flex  hover:bg-gray-200 pb-2'>
+                    <div className='mt-2 ml-2'>
+                    <PiSignOutFill onClick={() => {
+                        pb.authStore.clear();
+                        setIsLoggedIn(false);
+                        setIsDropdownOpen(false);
+                        cachedUser = { isAuthenticated: false, data: null };
+                      }} size={24} className="text-black text-center justify-center"/>
+                    </div>
                     <button
                       onClick={() => {
                         pb.authStore.clear();
@@ -197,9 +229,9 @@ const Navbar = () => {
                         setIsDropdownOpen(false);
                         cachedUser = { isAuthenticated: false, data: null };
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                      className="block w-full text-left px-4 pt-3 hover:bg-gray-200"
                     >
-                      Sign Out
+                      Cerrar sesión
                     </button>
                   </li>
                 </ul>
