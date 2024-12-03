@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { FaShoppingCart, FaHeart, FaEye, FaExchangeAlt } from 'react-icons/fa';
+import { FaShoppingCart, FaEye } from 'react-icons/fa'; // Botón de carrito y ojo
 import default_img from '@/app/public/img/glasses.png';
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +23,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) => {
   const router = useRouter();
   const { id, nombre, url, descripcion, precio, descuento } = productData;
-  console.log(productData);
+
   const handleAddToCart = () => {
     const existingCart = localStorage.getItem('cart');
     const cartItems = existingCart ? JSON.parse(existingCart) : [];
@@ -49,6 +49,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
     router.push('/ShoppingCart');
   };
 
+  // Función para redirigir a la página de detalles
+  const handleViewProduct = () => {
+    router.push(`/product/${id}`); // Suponiendo que la ruta es "/product/[id]"
+  };
 
   // Renderizar estrellas según el rating
   const renderStars = (rating: number) => {
@@ -78,21 +82,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
   };
 
   return (
-    <div className="flex border rounded-lg overflow-hidden shadow-lg bg-white">
-      <div className="relative w-1/2">
+    <div className="flex border rounded-lg overflow-hidden shadow-lg bg-white w-[500px] h-[380px]"> {/* Aumento de altura */}
+      <div className="relative w-full h-2/3">
         <Image
           src={url || default_img}
           alt={nombre}
-          fill={true}
-          sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
-         
+          layout="fill"
+          objectFit="contain" // Reescalar la imagen sin distorsionarla
+          objectPosition="center" // Centrar la imagen
           quality={100}
-          className="rounded-l-lg"
+          className="rounded-t-lg"
         />
       </div>
 
       {/* Información del producto */}
-      <div className="w-1/2 p-4 flex flex-col justify-between">
+      <div className="w-full p-4 flex flex-col justify-between h-1/3">
         {/* Nombre y calificación */}
         <div>
           <h2 className="text-black text-xl font-medium my-2">{nombre}</h2>
@@ -102,7 +106,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           {/* Precio */}
           <p className="text-2xl font-bold text-black my-4">${(precio * (1 - descuento)).toFixed(2)} MXN</p>
           <hr className="border-black mb-2" />
-          <p className='text-gray-700'>{descripcion}</p>
+          {/* Descripción limitada a 3 líneas */}
+          <p className="text-gray-700 line-clamp-3">{descripcion}</p>
           <hr className="border-black mb-2" />
           <p className='font-mono'>Acciones rapidas</p>
         </div>
@@ -115,14 +120,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           >
             <FaShoppingCart />
           </button>
-          <button className="mx-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded transition duration-300 border border-black">
-            <FaHeart />
-          </button>
-          <button className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
+
+          {/* Botón del ojo para ver el producto */}
+          <button
+            onClick={handleViewProduct}
+            className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
+          >
             <FaEye />
-          </button>
-          <button className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
-            <FaExchangeAlt />
           </button>
         </div>
       </div>

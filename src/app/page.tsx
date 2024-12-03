@@ -13,7 +13,7 @@ import { FaInstagram } from "react-icons/fa";
 import Sidebar from "./components/Sidebar/Sidebar";
 import ProductCard from "./components/Card/ProductCard";
 import Chatbot from "./components/Chatbot/Chatbot";
-
+import Link from 'next/link';
 
 
 
@@ -33,8 +33,11 @@ export default function Home() {
           <p className="text-2xl mb-2 font-montserrat font-medium">Top fashion para hombre</p>
           {}
           <h1 className="text-5xl font-extrabold mb-6 font-montserrat">Lo mejor en moda para hombres</h1>
+
           <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 font-montserrat">
-            Conoce Más
+            <Link href="/Homepage">
+              Conoce Más
+            </Link>
           </button>
           
         </div>

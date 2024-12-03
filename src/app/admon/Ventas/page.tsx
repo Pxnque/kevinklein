@@ -1,46 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "../../components/Sidebaradmon/Sidebaradmon";
 import { Header } from "../../components/HeaderAdmon/HeaderAdmon";
 
 interface Venta {
   id: string;
-  imagen: string;
-  nombre: string;
-  cantidad: number;
-  entrega: string;
-  importe: number;
+  user_id: string;
+  shipping_id: string;
+  product_id: string;
+  quantity: number;
 }
 
-const ventas: Venta[] = [
-  {
-    id: "123450",
-    imagen: "/path/to/image.jpg",
-    nombre: "Headphone Joss",
-    cantidad: 5,
-    entrega: "Shoo Phar Mhie, Surabaya Timur JNE, 8918291892",
-    importe: 1500,
-  },
-  {
-    id: "123451",
-    imagen: "/path/to/image.jpg",
-    nombre: "Headphone Joss",
-    cantidad: 3,
-    entrega: "Shoo Phar Mhie, Surabaya Timur JNE, 8918291892",
-    importe: 900,
-  },
-  // Agrega más elementos aquí
-];
-
 export default function VentasPage() {
+  const [ventas, setVentas] = useState<Venta[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filtrar por nombre o ID
+  useEffect(() => {
+    // Obtener los datos de ventas desde PocketBase
+    const fetchVentas = async () => {
+      try {
+        const res = await fetch("https://kevinklein.pockethost.io/api/collections/sales/records");
+        const data = await res.json();
+        setVentas(data.items);
+      } catch (error) {
+        console.error("Error fetching sales data:", error);
+      }
+    };
+    fetchVentas();
+  }, []);
+
+  // Filtrar solo por el ID de la venta
   const filteredVentas = ventas.filter(
-    (venta) =>
-      venta.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      venta.id.toLowerCase().includes(searchTerm.toLowerCase())
+    (venta) => venta.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -57,7 +49,7 @@ export default function VentasPage() {
               <div className="mb-4 flex items-center">
                 <input
                   type="text"
-                  placeholder="Buscar por ID o nombre..."
+                  placeholder="Buscar por ID de venta..."
                   className="border border-gray-300 rounded-md p-2 w-full max-w-md text-black focus:outline-none focus:ring focus:border-blue-500"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -70,28 +62,20 @@ export default function VentasPage() {
                   <thead>
                     <tr className="bg-gray-100 text-left text-gray-600 uppercase text-sm">
                       <th className="px-6 py-3 border-b">ID</th>
-                      <th className="px-6 py-3 border-b">Imagen</th>
-                      <th className="px-6 py-3 border-b">Nombre del artículo</th>
+                      <th className="px-6 py-3 border-b">Usuario ID</th>
+                      <th className="px-6 py-3 border-b">Producto ID</th>
                       <th className="px-6 py-3 border-b">Cantidad</th>
-                      <th className="px-6 py-3 border-b">Entrega</th>
-                      <th className="px-6 py-3 border-b">Importe</th>
+                      <th className="px-6 py-3 border-b">Shipping ID</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredVentas.map((venta) => (
                       <tr key={venta.id} className="hover:bg-gray-50 text-gray-700">
                         <td className="px-6 py-4 border-b">{venta.id}</td>
-                        <td className="px-6 py-4 border-b">
-                          <img
-                            src={venta.imagen}
-                            alt="Artículo"
-                            className="w-16 h-16 object-cover rounded-md"
-                          />
-                        </td>
-                        <td className="px-6 py-4 border-b">{venta.nombre}</td>
-                        <td className="px-6 py-4 border-b">{venta.cantidad}</td>
-                        <td className="px-6 py-4 border-b">{venta.entrega}</td>
-                        <td className="px-6 py-4 border-b">${venta.importe}</td>
+                        <td className="px-6 py-4 border-b">{venta.user_id}</td>
+                        <td className="px-6 py-4 border-b">{venta.product_id}</td>
+                        <td className="px-6 py-4 border-b">{venta.quantity}</td>
+                        <td className="px-6 py-4 border-b">{venta.shipping_id}</td>
                       </tr>
                     ))}
                   </tbody>
