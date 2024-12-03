@@ -202,7 +202,7 @@ const HomePage: React.FC = () => {
 
               {/* Botones de vista */}
               <div className="flex items-center">
-                <button className="mr-2 p-2 bg-gray-200 rounded-md hover:bg-gray-300 focus:ring-2 focus:ring-gray-300">
+                {/* <button className="mr-2 p-2 bg-gray-200 rounded-md hover:bg-gray-300 focus:ring-2 focus:ring-gray-300">
                   <Image
                     src={gridIcon}
                     alt="Grid View"
@@ -219,7 +219,7 @@ const HomePage: React.FC = () => {
                     height={24}
                     className="object-contain"
                   />
-                </button>
+                </button> */}
               </div>
 
               <p className="text-gray-500">

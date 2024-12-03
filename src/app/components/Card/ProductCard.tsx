@@ -85,6 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           alt={nombre}
           fill={true}
           sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
+         
           quality={100}
           className="rounded-l-lg"
         />
@@ -110,7 +111,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
         <div className="flex justify-start my-3">
           <button
             onClick={handleAddToCart}
-            className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
+            className="z-40 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
           >
             <FaShoppingCart />
           </button>
