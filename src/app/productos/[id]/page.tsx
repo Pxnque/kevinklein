@@ -10,6 +10,7 @@ import Footer from "@/app/components/Footer/Footer";
 import Chatbot from "@/app/components/Chatbot/Chatbot";
 import PocketBase from "pocketbase";
 import { useRouter } from 'next/navigation';
+import ProductReviews from "@/app/components/ProductReviews/review";
 
 interface Product {
   id: string;
@@ -29,9 +30,19 @@ interface Product {
   };
 }
 
+interface Review {
+  user_id: string;
+  user_name: string;
+  user_photo: string | null;
+  rating: number;
+  comment: string;
+  review_date: string;
+}
+
 const ProductPage = () => {
   const params = useParams(); // Dynamically fetch route params
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]); // Estado para almacenar las reseñas
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0); // Track selected thumbnail
@@ -52,6 +63,41 @@ const ProductPage = () => {
         );
         setProduct(record);
         console.log(record);
+
+        // Obtener las reseñas del producto
+        const reviewsData = await pb.collection("product_reviews").getFullList(200, {
+          filter: `product_id = "${params.id}"`, // Filtrar reseñas por el ID del producto
+        });
+
+        // Obtener información de usuario para cada reseña
+        const reviewsWithUserDetails = await Promise.all(
+          reviewsData.map(async (review: any) => {
+            let userDetails = { username: "Usuario Anónimo", profile_picture: null };
+
+            try {
+              // Consulta adicional para obtener información del usuario
+              const user = await pb.collection("users").getOne(review.user_id);
+              userDetails = {
+                username: user.name,
+                profile_picture: user.avatar ? pb.files.getURL(user, user.avatar) : null,
+              };
+            } catch (err) {
+              console.warn(`Error fetching user details for user_id ${review.user_id}:`, err);
+            }
+
+            return {
+              user_id: review.user_id,
+              user_name: userDetails.username,
+              user_photo: userDetails.profile_picture,
+              rating: review.rating,
+              comment: review.comment,
+              review_date: review.created, // Usa la fecha de creación como review_date
+            };
+          })
+        );
+
+        setReviews(reviewsWithUserDetails);
+
       } catch (err) {
         console.error("Error fetching product:", err);
         setError("Failed to fetch product data. Please try again later.");
@@ -217,6 +263,10 @@ const ProductPage = () => {
             </p>
           </div>
         </div>
+      </div>
+      {/* Mostrar las reviews */}
+      <div className="mt-10">
+        <ProductReviews reviews={reviews} />
       </div>
       <Slider />
       <Chatbot />

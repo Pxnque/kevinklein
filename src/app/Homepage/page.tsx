@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Categorías seleccionadas
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]); // Rangos de precio seleccionados
   const [selectedRating, setSelectedRating] = useState<number | null>(null); // Calificación seleccionada
-
+  const [sortOption, setSortOption] = useState<string>('default'); // Estado para la opción de orden
 
   const handleSearch = (term: string) => {
     setSearchTerm(term); // Actualiza el término de búsqueda
@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       try {
         // Obtener productos
-        const productosData = await pb.collection("productos").getFullList(200, {requestKey: null});
+        const productosData = await pb.collection("productos").getFullList(200, { requestKey: null });
         const formattedProductos = productosData.map((producto: any) => ({
           id: producto.id,
           nombre: producto.nombre,
@@ -70,7 +70,7 @@ const HomePage: React.FC = () => {
         }));
 
         // Obtener ratings para cada producto
-        const reviewsData = await pb.collection("product_reviews").getFullList(200, {requestKey: null});
+        const reviewsData = await pb.collection("product_reviews").getFullList(200, { requestKey: null });
         const ratingsMap: Record<string, { total: number; count: number }> = {};
 
         reviewsData.forEach((review: any) => {
@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
         setProductos(productosConRatings);
 
         // Obtener categorías
-        const categoriasData = await pb.collection('categorias').getFullList(200, {requestKey: null});
+        const categoriasData = await pb.collection('categorias').getFullList(200, { requestKey: null });
         const formattedCategorias = categoriasData.map((categoria: any) => ({
           id: categoria.id,
           nombre: categoria.nombre,
@@ -150,6 +150,23 @@ const HomePage: React.FC = () => {
     setFilteredProductos(filteredBySearch);
   };
 
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(e.target.value); // Actualiza la opción seleccionada
+  };
+
+  const sortedProductos = [...filteredProductos].sort((a, b) => {
+    if (sortOption === 'price-asc') {
+      return a.precio*(1-a.descuento) - b.precio*(1-b.descuento); // Precio ascendente
+    }
+    if (sortOption === 'price-desc') {
+      return b.precio*(1-b.descuento) - a.precio*(1-a.descuento); // Precio descendente
+    }
+    if (sortOption === 'rating') {
+      return b.rating - a.rating; // Mejor calificado
+    }
+    return 0; // Default: no ordenar
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -192,6 +209,8 @@ const HomePage: React.FC = () => {
                 <select
                   id="ordenar"
                   className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100"
+                  value={sortOption} // Enlazar el estado actual
+                  onChange={handleSortChange} // Llamar al manejador al cambiar la opción
                 >
                   <option value="default">Default</option>
                   <option value="price-asc">Precio (ascendente)</option>
@@ -232,9 +251,9 @@ const HomePage: React.FC = () => {
             {/* Renderizar productos */}
             {loading ? (
               <p>Cargando productos...</p>
-            ) : filteredProductos.length > 0 ? (
+            ) : sortedProductos.length > 0 ? (
               <div className="grid grid-cols-2 gap-6">
-                {filteredProductos.map((producto) => (
+                {sortedProductos.map((producto) => (
                   <a href={`/productos/${producto.id}`} className="hover:scale-105 transition duration-500">
                     <Card key={producto.id} productData={producto} rating={producto.rating} />
                   </a>
