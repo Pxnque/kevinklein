@@ -8,7 +8,7 @@ import Link from "next/link";
 //import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Imagen1 from "@/app/public/img/elegantioso.jpg";
+//import Imagen1 from "@/app/public/img/elegantioso.jpg";
        //bg-[url('https://images.unsplash.com/photo-1724812774041-0460ce39a623?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]"
 
 const nosotrosPage = () => {
@@ -19,12 +19,16 @@ const nosotrosPage = () => {
       </div>
 
       <section
-        className="mb-15  px-4 py-10  text-white text-justify from-black from-27% via-blue-900 via-55%"
-     >
-        <div className=" px-16">
-          <h2 className="text-4xl font-semibold mb-4">Nuestra Historia</h2>
-          <div className="md:flex items-center gap-8">
-            <div className="md:w-1/2">
+        className="mb-15  px-4 py-10  text-white text-justify  from-cyan-500 to-blue-500 bg-fixed bg-center bg-no-repeat bg-cover
+       bg-[url('https://images.unsplash.com/photo-1721549369164-2fd07f795ce4?q=80&w=1017&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]
+        "
+      >
+        <div className="bg-black bg-opacity-75 px-16 rounded-lg p-8">
+          <h2 className=" text-center text-4xl font-semibold mb-8">
+            Nuestra Historia
+          </h2>
+          <div className=" items-center gap-8">
+            <div className="">
               <p className="text-lg mb-4">
                 Fundada en 2015, Kevin Klein comenzó con una misión simple:
                 proporcionar a los hombres ropa de alta calidad y con estilo sin
@@ -40,7 +44,7 @@ const nosotrosPage = () => {
                 mejor posible, sin importar la ocasión o el presupuesto.
               </p>
             </div>
-            <div className="md:w-1/3">
+            {/*}<div className="">
               <Image
                 src={Imagen1}
                 alt="GentStyle's growth over the years"
@@ -48,14 +52,16 @@ const nosotrosPage = () => {
                 height={400}
                 className="rounded-lg shadow-md"
               />
-            </div>
+            </div>{*/}
           </div>
         </div>
       </section>
 
       <section className=" mb-12 mt-12">
         <div className=" px-16">
-          <h2 className="text-4xl font-semibold mb-4">Nuestra Mision</h2>
+          <h2 className="text-4xl font-semibold mb-4 text-center">
+            Nuestra Mision
+          </h2>
           <Card>
             <CardContent className="p-6">
               <p className="text-lg italic text-center">
@@ -70,7 +76,7 @@ const nosotrosPage = () => {
 
       <section className="mb-12">
         <div className=" px-16">
-          <h2 className="text-4xl font-semibold mb-4">
+          <h2 className="text-4xl font-semibold mb-4 text-center">
             Qué nos hace diferentes
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -161,7 +167,7 @@ const teamMembers = [
   {
     name: "David Chen",
     role: "Fundador y Jefe de Diseño",
-    image: "/img/elegantioso.jpg",
+    image: "/elegantioso.png",
   },
   {
     name: "Michael Ross",
