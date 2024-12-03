@@ -24,6 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
   const router = useRouter();
   const { id, nombre, url, descripcion, precio, descuento } = productData;
   console.log(productData);
+  
   const handleAddToCart = () => {
     const existingCart = localStorage.getItem('cart');
     const cartItems = existingCart ? JSON.parse(existingCart) : [];
@@ -37,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
       const newItem = {
         product: productData.nombre,
         img: productData.url,
-        shipping: 'a calcular',
+        shipping: 'Gratis',
         originalPrice: productData.precio,
         discountedPrice: productData.precio * (1 - productData.descuento),
         quantity: 1,
@@ -115,14 +116,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           >
             <FaShoppingCart />
           </button>
-          <button className="mx-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded transition duration-300 border border-black">
-            <FaHeart />
-          </button>
           <button className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
             <FaEye />
-          </button>
-          <button className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black">
-            <FaExchangeAlt />
           </button>
         </div>
       </div>

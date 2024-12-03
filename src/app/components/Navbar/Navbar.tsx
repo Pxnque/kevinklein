@@ -141,7 +141,7 @@ const Navbar = () => {
         </div>
 
         <div id="dropdownmenu" className="flex items-center gap-6 relative">
-          <IoSearchSharp size={20} className="text-white" />
+          {/* <IoSearchSharp size={20} className="text-white" /> */}
           {isLoggedIn ? (
             <div className="relative">
               <button
