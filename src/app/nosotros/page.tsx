@@ -8,6 +8,8 @@ import Link from "next/link";
 //import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Imagen1 from "@/app/public/img/elegantioso.jpg";
+       //bg-[url('https://images.unsplash.com/photo-1724812774041-0460ce39a623?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]"
 
 const nosotrosPage = () => {
   return (
@@ -16,7 +18,9 @@ const nosotrosPage = () => {
         <Navbar />
       </div>
 
-      <section className="mb-15  px-4 py-10 bg-gradient-to-r from-black from-27% via-blue-900 via-55% text-white text-justify">
+      <section
+        className="mb-15  px-4 py-10  text-white text-justify from-black from-27% via-blue-900 via-55%"
+     >
         <div className=" px-16">
           <h2 className="text-4xl font-semibold mb-4">Nuestra Historia</h2>
           <div className="md:flex items-center gap-8">
@@ -36,11 +40,11 @@ const nosotrosPage = () => {
                 mejor posible, sin importar la ocasión o el presupuesto.
               </p>
             </div>
-            <div className="md:w-1/2">
+            <div className="md:w-1/3">
               <Image
-                src="/img/elegantioso.jpg"
+                src={Imagen1}
                 alt="GentStyle's growth over the years"
-                width={600}
+                width={400}
                 height={400}
                 className="rounded-lg shadow-md"
               />
@@ -51,7 +55,7 @@ const nosotrosPage = () => {
 
       <section className=" mb-12 mt-12">
         <div className=" px-16">
-          <h2 className="text-3xl font-semibold mb-4">Nuestra Mision</h2>
+          <h2 className="text-4xl font-semibold mb-4">Nuestra Mision</h2>
           <Card>
             <CardContent className="p-6">
               <p className="text-lg italic text-center">
@@ -86,10 +90,12 @@ const nosotrosPage = () => {
 
       <section className="mb-12">
         <div className=" px-16">
-          <h2 className="text-4xl font-semibold mb-6 text-center">Nuestro Equipo</h2>
+          <h2 className="text-4xl font-semibold mb-6 text-center">
+            Nuestro Equipo
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member) => (
-              <Card className="bg-blue-800"  key={member.name}>
+              <Card className="bg-blue-800" key={member.name}>
                 <CardContent className="p-6">
                   <Image
                     src={member.image}
@@ -113,13 +119,13 @@ const nosotrosPage = () => {
 
       <section className="text-center">
         <div className=" px-16">
-          <h2 className="text-2xl font-semibold mb-4">
-            Ready to Upgrade Your Style?
+          <h2 className="text-4xl font-semibold mb-4">
+            ¿Listo para mejorar tu estilo?
           </h2>
-          <p className="text-lg mb-6">
-            Explore our latest collections and find your perfect look.
+          <p className="text-xl mb-6">
+            Explora nuestras últimas colecciones y encuentra tu look perfecto.
           </p>
-          <Button className="mb-12 font-semibold">
+          <Button className="mb-12 font-semibold text-lg">
             <Link href="#">Compra Ahora</Link>
           </Button>
         </div>
@@ -155,22 +161,22 @@ const teamMembers = [
   {
     name: "David Chen",
     role: "Fundador y Jefe de Diseño",
-    image: "/img/elegantioso.jpg?height=200&width=200",
+    image: "/img/elegantioso.jpg",
   },
   {
     name: "Michael Ross",
     role: "Estilista Principal",
-    image: "/img/elegantioso.jpg?height=200&width=200",
+    image: "/img/elegantioso.jpg",
   },
   {
     name: "Sarah Johnson",
     role: "Gerente de Experiencia del Cliente",
-    image: "/img/elegantioso.jpg?height=200&width=200",
+    image: "/img/elegantioso.jpg",
   },
   {
     name: "Tom Baker",
     role: "Director de Cadena de Suministro",
-    image: "/img/elegantioso.jpg?height=200&width=200",
+    image: "/img/elegantioso.jpg",
   },
 ];
 
