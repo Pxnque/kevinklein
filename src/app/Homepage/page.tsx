@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
             {loading ? (
               <p>Cargando productos...</p>
             ) : sortedProductos.length > 0 ? (
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid 2xl:grid-cols-2 lg:grid-cols-1 gap-6">
                 {sortedProductos.map((producto) => (
                   <a href={`/productos/${producto.id}`} className="hover:scale-105 transition duration-500">
                     <Card key={producto.id} productData={producto} rating={producto.rating} />

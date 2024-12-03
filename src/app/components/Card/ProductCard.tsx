@@ -82,49 +82,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
   };
 
   return (
-    <div className="flex border rounded-lg overflow-hidden shadow-lg bg-white w-[500px] h-[380px]"> {/* Aumento de altura */}
-      <div className="relative w-full h-2/3">
+    <div className="flex flex-col sm:flex-row border rounded-lg overflow-hidden shadow-lg bg-white w-full max-w-md sm:max-w-none h-auto sm:h-[380px] mx-auto">
+      {/* Image Section */}
+      <div className="relative w-full sm:w-1/2 h-48 sm:h-full">
         <Image
           src={url || default_img}
           alt={nombre}
           layout="fill"
-          objectFit="contain" // Reescalar la imagen sin distorsionarla
-          objectPosition="center" // Centrar la imagen
+          objectFit="contain"
+          objectPosition="center"
           quality={100}
-          className="rounded-t-lg"
+          className="rounded-t-lg sm:rounded-none sm:rounded-l-lg"
         />
       </div>
-
-      {/* Información del producto */}
-      <div className="w-full p-4 flex flex-col justify-between h-1/3">
-        {/* Nombre y calificación */}
+  
+      {/* Product Info Section */}
+      <div className="w-full sm:w-1/2 p-4 flex flex-col justify-between">
+        {/* Name, Rating, and Price */}
         <div>
-          <h2 className="text-black text-xl font-medium my-2">{nombre}</h2>
-          <div className="flex items-center space-x-1 text-black my-4">
-            {renderStars(rating)} {/* Usa el rating de ese producto */}
+          <h2 className="text-black text-lg sm:text-xl font-medium my-2">{nombre}</h2>
+          <div className="flex items-center space-x-1 text-black my-2">
+            {renderStars(rating)}
           </div>
-          {/* Precio */}
-          <p className="text-2xl font-bold text-black my-4">${(precio * (1 - descuento)).toFixed(2)} MXN</p>
+          <p className="text-xl sm:text-2xl font-bold text-black my-2">${(precio * (1 - descuento)).toFixed(2)} MXN</p>
           <hr className="border-black mb-2" />
-          {/* Descripción limitada a 3 líneas */}
-          <p className="text-gray-700 line-clamp-3">{descripcion}</p>
-          <hr className="border-black mb-2" />
-          <p className='font-mono'>Acciones rapidas</p>
+          <p className="text-gray-700 line-clamp-3 text-sm sm:text-base">{descripcion}</p>
+          <hr className="border-black my-2" />
+          <p className="font-mono text-sm sm:text-base">Acciones rápidas</p>
         </div>
-
-        {/* Botones de acción */}
-        <div className="flex justify-start my-3">
+  
+        {/* Action Buttons */}
+        <div className="flex justify-start space-x-2 mt-3">
           <button
             onClick={handleAddToCart}
             className="z-40 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
           >
             <FaShoppingCart />
           </button>
-
-          {/* Botón del ojo para ver el producto */}
+  
           <button
             onClick={handleViewProduct}
-            className="mx-2 p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
+            className="p-2 text-gray-700 hover:text-white hover:bg-gray-200 rounded transition duration-300 border border-black"
           >
             <FaEye />
           </button>
@@ -132,6 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
       </div>
     </div>
   );
+  
 };
 
 export default ProductCard;
