@@ -31,11 +31,11 @@ const nosotrosPage = () => {
             exceptional customer service.
           </p>
           <div className="w-[450px]">
-            <AspectRatio>
-              <img
-                className="Image"
-                src="https://images.unsplash.https://images.unsplash.com/photo-1724812774041-0460ce39a623?q=80&w=1364&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/photo-1535025183041-0991a977e25b?w=300&dpr=2&q=80"
-                alt="Landscape photograph by Tobias Tullius"
+            <AspectRatio ratio={16 / 9}>
+              <Image
+                src="https://images.unsplash.com/photo-1535025183041-0991a977e25b?w=300&dpr=2&q=80"
+                alt="Nosotros"
+                className="rounded-md object-cover"
               />
             </AspectRatio>
           </div>
