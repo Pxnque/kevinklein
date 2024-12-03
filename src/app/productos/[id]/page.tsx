@@ -9,6 +9,8 @@ import Navbar from "@/app/components/Navbar/Navbar";
 import Footer from "@/app/components/Footer/Footer";
 import Chatbot from "@/app/components/Chatbot/Chatbot";
 import PocketBase from "pocketbase";
+import { useRouter } from 'next/navigation';
+import ProductReviews from "@/app/components/ProductReviews/review";
 
 interface Product {
   id: string;
@@ -28,15 +30,26 @@ interface Product {
   };
 }
 
+interface Review {
+  user_id: string;
+  user_name: string;
+  user_photo: string | null;
+  rating: number;
+  comment: string;
+  review_date: string;
+}
+
 const ProductPage = () => {
   const params = useParams(); // Dynamically fetch route params
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]); // Estado para almacenar las reseñas
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0); // Track selected thumbnail
+  const [selectedTalla, setSelectedTalla] = useState<string | null>(null);
 
-  const conDescuento = product ? product.precio - product.descuento : 0;
-  
+  const conDescuento = product ? product.precio * (1 - product.descuento) : 0;
+
   useEffect(() => {
     const fetchProduct = async () => {
       const pb = new PocketBase("https://kevinklein.pockethost.io");
@@ -50,6 +63,41 @@ const ProductPage = () => {
         );
         setProduct(record);
         console.log(record);
+
+        // Obtener las reseñas del producto
+        const reviewsData = await pb.collection("product_reviews").getFullList(200, {
+          filter: `product_id = "${params.id}"`, // Filtrar reseñas por el ID del producto
+        });
+
+        // Obtener información de usuario para cada reseña
+        const reviewsWithUserDetails = await Promise.all(
+          reviewsData.map(async (review: any) => {
+            let userDetails = { username: "Usuario Anónimo", profile_picture: null };
+
+            try {
+              // Consulta adicional para obtener información del usuario
+              const user = await pb.collection("users").getOne(review.user_id);
+              userDetails = {
+                username: user.name,
+                profile_picture: user.avatar ? pb.files.getURL(user, user.avatar) : null,
+              };
+            } catch (err) {
+              console.warn(`Error fetching user details for user_id ${review.user_id}:`, err);
+            }
+
+            return {
+              user_id: review.user_id,
+              user_name: userDetails.username,
+              user_photo: userDetails.profile_picture,
+              rating: review.rating,
+              comment: review.comment,
+              review_date: review.created, // Usa la fecha de creación como review_date
+            };
+          })
+        );
+
+        setReviews(reviewsWithUserDetails);
+
       } catch (err) {
         console.error("Error fetching product:", err);
         setError("Failed to fetch product data. Please try again later.");
@@ -64,7 +112,7 @@ const ProductPage = () => {
   }, [params.id]);
 
   if (loading) {
-    
+
     return <><div className="bg-black"><Navbar /></div><div className="min-h-screen flex items-center justify-center">Loading...</div></>;
   }
 
@@ -79,19 +127,45 @@ const ProductPage = () => {
   if (!product) {
     return (
       <>
-      <div className="bg-black">
-        <Navbar />
-      </div>
-      <div className="min-h-screen flex items-center justify-center">
-        Product not found.
-      </div>
-      <Footer />
+        <div className="bg-black">
+          <Navbar />
+        </div>
+        <div className="min-h-screen flex items-center justify-center">
+          Product not found.
+        </div>
+        <Footer />
       </>
     );
   }
 
   const handlePhoto = (index: number) => {
     setSelectedPhotoIndex(index); // Update selected photo index
+  };
+
+  const router = useRouter();
+  const handleAddToCart = () => {
+    const existingCart = localStorage.getItem('cart');
+    const cartItems = existingCart ? JSON.parse(existingCart) : [];
+    const productIndex = cartItems.findIndex((item: any) => item.product === product.nombre);
+
+    if (productIndex >= 0) {
+      // Incrementar cantidad y recalcular total
+      cartItems[productIndex].quantity += 1;
+    } else {
+      // Agregar nuevo producto
+      const newItem = {
+        product: product.nombre,
+        img: `https://kevinklein.pockethost.io/api/files/productos/${product.id}/${product.fotos[0]}`,
+        shipping: 'a calcular',
+        originalPrice: product.precio,
+        discountedPrice: product.precio * (1 - product.descuento),
+        quantity: document.querySelector('#quantity') ? document.querySelector('#quantity').value : 1,
+      };
+      cartItems.push(newItem);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    router.push('/ShoppingCart');
   };
 
   return (
@@ -122,9 +196,8 @@ const ProductPage = () => {
                 width={100}
                 height={100}
                 onClick={() => handlePhoto(index)} // Pass the index of the clicked thumbnail
-                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
-                  selectedPhotoIndex === index ? "border-2 border-blue-600" : ""
-                }`}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${selectedPhotoIndex === index ? "border-2 border-blue-600" : ""
+                  }`}
               />
             ))}
           </div>
@@ -146,7 +219,9 @@ const ProductPage = () => {
               {product.tallas.map((talla, index) => (
                 <button
                   key={index}
-                  className="w-10 h-10 flex items-center justify-center border border-gray-300"
+                  onClick={() => setSelectedTalla(talla)}
+                  className={`w-10 h-10 flex items-center justify-center border border-gray-300 ${selectedTalla === talla ? "bg-blue-500 text-white" : ""
+                    }`}
                 >
                   {talla}
                 </button>
@@ -166,12 +241,14 @@ const ProductPage = () => {
               defaultValue="1"
               className="w-16 border border-gray-300 rounded-md p-2 text-center"
             />
-            <button className="bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-900">
+            <button className="bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-900"
+              onClick={handleAddToCart}
+            >
               AGREGAR AL CARRITO
             </button>
-            <button className="w-10 h-10 flex items-center justify-center border border-gray-200 hover:bg-gray-200 bg-white rounded-md">
+            {/* <button className="w-10 h-10 flex items-center justify-center border border-gray-200 hover:bg-gray-200 bg-white rounded-md">
               <FaHeart className="h-6 w-6 text-gray-400" />
-            </button>
+            </button> */}
           </div>
 
           <div className="text-sm text-black mb-6">
@@ -186,6 +263,10 @@ const ProductPage = () => {
             </p>
           </div>
         </div>
+      </div>
+      {/* Mostrar las reviews */}
+      <div className="mt-10">
+        <ProductReviews reviews={reviews} />
       </div>
       <Slider />
       <Chatbot />

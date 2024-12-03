@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Categorías */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Categorías <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
+                <h3 className="flex w-full font-semibold text-lg">Categorías</h3>
                 <ul className="mt-2 space-y-2">
                     {categorias.length > 0 ? (
                         categorias.map((categoria) => (
@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Precio */}
             <div className="space-y-4 mt-6">
-                <h3 className="flex w-full font-semibold text-lg">Precio <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
+                <h3 className="flex w-full font-semibold text-lg">Precio</h3>
                 <ul className="mt-2 space-y-2">
                     <li className="flex items-center">
                         <input
@@ -180,7 +180,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Calificación */}
             <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Calificación <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h3>
+                <h3 className="flex w-full font-semibold text-lg">Calificación</h3>
                 <ul className="mt-2 space-y-2">
                     {[5, 4, 3, 2, 1, 0].map((rating) => (
                         <li key={rating} className="flex items-center">
@@ -210,7 +210,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Color NOS deshicimos del color*/}
             {/* <div className="space-y-4">
-                <h3 className="flex w-full font-semibold text-lg">Color <FaAngleDown className="-left-full mt-2 w-3 h-3" /></h3>
+                <h3 className="flex w-full font-semibold text-lg">Color </h3>
                 <ul className="mt-2 space-y-2">
                     {[
                         { id: "blanco", label: "Blanco", color: "bg-gray-200" },
@@ -235,7 +235,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Populares */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Populares <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Populares </h2>
                 <ul className="mb-8 flex flex-wrap gap-2">
                     {['Top', 'Fashion', 'Colección', 'Nuevo', 'Lo mejor', 'Galería'].map((item, index) => (
                         <li key={index}>
@@ -250,7 +250,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
 
             {/* Productos nuevos */}
             <div className="space-y-4">
-                <h2 className="flex w-full text-2xl font-bold mb-4">Ofertas <FaAngleDown className='-left-full mt-2 w-3 h-3' /></h2>
+                <h2 className="flex w-full text-2xl font-bold mb-4">Ofertas </h2>
                 <div className="space-y-4">
                     <ProductCardDiscount productos={productosConDescuento} />
                 </div>

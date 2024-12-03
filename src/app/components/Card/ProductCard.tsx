@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
       const newItem = {
         product: productData.nombre,
         img: productData.url,
-        shipping: 'a calcular',
+        shipping: 'Gratis',
         originalPrice: productData.precio,
         discountedPrice: productData.precio * (1 - productData.descuento),
         quantity: 1,
