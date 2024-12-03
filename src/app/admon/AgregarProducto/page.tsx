@@ -22,6 +22,8 @@ export default function AgregarProductoPage() {
   const [categorias, setCategorias] = useState<{ id: string; nombre: string }[]>([]);
   const [errors, setErrors] = useState({ general: "" });
 
+  const tallasDisponibles = ["XS", "S", "M", "L", "XL"];
+
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -45,44 +47,43 @@ export default function AgregarProductoPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData((prev) => ({
-        ...prev,
-        fotos: Array.from(e.target.files),
-      }));
-    }
-  };
-
   const handleTallasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       tallas: checked
-        ? [...prev.tallas, value]
-        : prev.tallas.filter((talla) => talla !== value),
+        ? [...prev.tallas, value.toUpperCase()]
+        : prev.tallas.filter((talla) => talla !== value.toUpperCase()),
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFormData((prev) => ({ ...prev, fotos: Array.from(e.target.files) }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { nombre, descripcion, precio, descuento, cantidad, tallas, id_categoria, fotos } =
-      formData;
 
-    if (!nombre || !descripcion || !precio || !cantidad || !id_categoria || tallas.length === 0) {
+    const { nombre, descripcion, precio, descuento, cantidad, tallas, id_categoria, fotos } = formData;
+
+    if (!nombre || !descripcion || !precio || !cantidad || !id_categoria || tallas.length === 0 || !fotos) {
       setErrors({ general: "Todos los campos son obligatorios y deben ser válidos." });
       return;
     }
 
-    const data = new FormData();
-    data.append("nombre", nombre);
-    data.append("descripcion", descripcion);
-    data.append("precio", precio);
-    data.append("descuento", descuento || "0"); // Descuento opcional
-    data.append("cantidad", cantidad);
-    data.append("id_categoria", id_categoria);
-    tallas.forEach((talla) => data.append("tallas[]", talla));
-    fotos.forEach((foto) => data.append("fotos", foto));
+    const data = {
+      nombre,
+      descripcion,
+      precio: parseFloat(precio),
+      descuento: parseFloat(descuento) || 0,
+      cantidad: parseInt(cantidad, 10),
+      tallas,
+      id_categoria,
+      fotos, // Agregar la imagen al objeto de datos
+    };
 
     try {
       const response = await pb.collection("productos").create(data);
@@ -96,7 +97,7 @@ export default function AgregarProductoPage() {
         cantidad: "",
         tallas: [],
         id_categoria: "",
-        fotos: [],
+        fotos: [], // Resetear la imagen
       });
       setErrors({ general: "" });
     } catch (err: any) {
@@ -193,23 +194,11 @@ export default function AgregarProductoPage() {
                     />
                   </div>
 
-                  {/* Fotos */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
-                    />
-                  </div>
-
                   {/* Tallas */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Tallas</label>
                     <div className="flex space-x-4">
-                      {["XS", "S", "M", "L", "XL"].map((talla) => (
+                      {tallasDisponibles.map((talla) => (
                         <label key={talla} className="flex items-center space-x-2">
                           <input
                             type="checkbox"
@@ -233,23 +222,45 @@ export default function AgregarProductoPage() {
                       className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
                     >
                       <option value="">Seleccione una categoría</option>
-                      {categorias.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.nombre}
+                      {categorias.map((categoria) => (
+                        <option key={categoria.id} value={categoria.id}>
+                          {categoria.nombre}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Botones */}
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="bg-green-600 text-white px-4 py-2 rounded-md text-sm"
-                    >
-                      Añadir Producto
-                    </button>
-                  </div>
+                  {/* Fotos */}
+                  <div className="mb-6">
+  <label className="block text-sm font-medium text-gray-700 mb-2">Fotos</label>
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    onChange={handleFileChange}
+    className="w-full border border-gray-300 rounded-md p-2 text-sm text-black"
+  />
+  {formData.fotos.length > 0 && (
+    <div className="mt-4 grid grid-cols-3 gap-4">
+      {formData.fotos.map((file, index) => (
+        <div key={index} className="flex justify-center items-center">
+          <img
+            src={URL.createObjectURL(file)}
+            alt={`Vista previa ${index + 1}`}
+            className="h-20 w-20 object-cover border border-gray-300 rounded"
+          />
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md"
+                  >
+                    Añadir Producto
+                  </button>
                 </form>
               </div>
             </div>
