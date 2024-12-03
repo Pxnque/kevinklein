@@ -79,14 +79,14 @@ const nosotrosPage = () => {
           <h2 className="text-4xl font-semibold mb-4 text-center">
             Qué nos hace diferentes
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {features.map((feature) => (
               <Card key={feature.title}>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">
+                  <h3 className="text-2xl font-semibold mb-2 text-center">
                     {feature.title}
                   </h3>
-                  <p>{feature.description}</p>
+                  <p className="p-6 text-center">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -101,7 +101,11 @@ const nosotrosPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member) => (
-              <Card className="bg-blue-800" key={member.name}>
+              <Card
+                className="bg-gradient-to-t from-blue-900 from-35% to-transparent
+                 hover:from-blue-900 hover:to-black"
+                key={member.name}
+              >
                 <CardContent className="p-6">
                   <Image
                     src={member.image}
@@ -110,10 +114,10 @@ const nosotrosPage = () => {
                     height={200}
                     className="rounded-full mx-auto mb-4"
                   />
-                  <h3 className="text-xl font-semibold mb-2 text-center text-white">
+                  <h3 className="text-2xl font-semibold mb-2 text-center text-white">
                     {member.name}
                   </h3>
-                  <p className="text-center text-muted-foreground text-blue-200">
+                  <p className="text-center text-muted-foreground text-gray-100">
                     {member.role}
                   </p>
                 </CardContent>
