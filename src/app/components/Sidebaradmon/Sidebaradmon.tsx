@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   Settings,
   UserPlus,
+  Edit2,
 } from "lucide-react";
 
 interface NavItem {
@@ -28,6 +29,7 @@ const navItems: NavItem[] = [
   { title: "Editar Producto", href: "/admon/EditarProducto", icon: Edit3 },
   { title: "Reseñas", href: "/admon/Resenas", icon: Eye },
   { title: "Ventas", href: "/admon/Ventas", icon: ShoppingCart },
+  { title: "Agregar/Eliminar categoria", href: "/admon/AgregarCategoria", icon: Edit2 },
   { title: "Configuración (Datos de la tienda)", href: "/admon/Configuracion", icon: Settings },
 ];
 
