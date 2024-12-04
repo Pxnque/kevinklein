@@ -174,7 +174,7 @@ const CheckoutSummary = () => {
           </button>
         </div>
       ) : (
-        <div className="text-center flex flex-row w-full" id="shipping">
+        <div className="text-center flex lg:flex-row flex-col w-full lg:w-full" id="shipping">
           <div>
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-4">
@@ -218,9 +218,9 @@ const CheckoutSummary = () => {
               )}
             </div>
           </div>
-          <div className="w-max">
+          <div className="w-max lg:mt-0 sm:mt-8">
             <div className="mb-4 px-12 w-max">
-              <span className="font-semibold text-xl">Total</span>
+              <span className=" float-start font-semibold text-xl">Total</span>
               <span className="float-right text-lg font-bold">
                 ${total.toFixed(2)}
               </span>
