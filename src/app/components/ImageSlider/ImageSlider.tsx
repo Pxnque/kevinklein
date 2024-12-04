@@ -37,12 +37,12 @@ const ImageSlider = () => {
   ];
 
   return (
-    <div className="flex justify-center my-8">
-      <div className="flex space-x-1 overflow-hidden" style={{ width: '80%' }}>
+    <div className="my-8 px-4 sm:px-8 lg:px-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {visibleImages.map((image, index) => (
           <div
             key={index}
-            className="w-1/3 flex-shrink-0 h-80 relative"
+            className="relative w-full h-60 sm:h-80 lg:h-96"
           >
             <Image
               src={image.src}
@@ -54,15 +54,6 @@ const ImageSlider = () => {
           </div>
         ))}
       </div>
-      {/* Opcional: Indicadores */}
-      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {images.map((_, index) => (
-          <span
-            key={index}
-            className={`w-3 h-3 rounded-full ${index === startIndex ? 'bg-white' : 'bg-gray-400'}`}
-          />
-        ))}
-      </div> */}
     </div>
   );
 };
