@@ -128,8 +128,8 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/Homepage" className="hover:text-gray-200">
-                MUJER
+              <Link href="/nosotros" className="hover:text-gray-200">
+                NOSOTROS
               </Link>
             </li>
             <li>
