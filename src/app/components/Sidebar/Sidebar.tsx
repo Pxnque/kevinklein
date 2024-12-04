@@ -133,6 +133,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
             ))}
           </ul>
         </div>
+        <hr className="border-gray-400 my-2" />
 
         {/* Price */}
         <div>
@@ -148,9 +149,37 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
                 Menos de $100
               </label>
             </li>
-            {/* Add more price ranges as needed */}
+            
+            <li className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="100-250"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('100-250', e.target.checked)}
+                        />
+                        <label htmlFor="100-250">$100 - $250</label>
+                    </li>
+                    <li className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="250-350"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('250-350', e.target.checked)}
+                        />
+                        <label htmlFor="250-350">$250 - $350</label>
+                    </li>
+                    <li className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="mas500"
+                            className="mr-2"
+                            onChange={(e) => handlePriceChange('mas500', e.target.checked)}
+                        />
+                        <label htmlFor="mas500">Mayor de $500</label>
+                    </li>
           </ul>
         </div>
+        <hr className="border-gray-400 my-2" />
 
         {/* Rating */}
         <div>
@@ -175,6 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
             ))}
           </ul>
         </div>
+        <hr className="border-gray-400 my-2" />
 
          {/* Populares */}
          <div className="space-y-4">
@@ -190,6 +220,7 @@ const Sidebar: React.FC<SidebarProps> = ({ productos, categorias, onFilterChange
                 </ul>
             </div>
             <hr className="border-gray-400 my-2" />
+            
 
             {/* Productos nuevos */}
             <div className="space-y-4">

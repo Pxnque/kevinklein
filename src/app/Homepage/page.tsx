@@ -188,20 +188,20 @@ const HomePage: React.FC = () => {
           <section className="w-3/4 p-4">
             {/* Barra de cantidad, orden y vista */}
             <div className="flex flex-wrap justify-between items-center p-4 bg-white shadow-md mb-6 gap-4 sm:gap-6">
-  {/* Quantity Selector */}
-  <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
-    <label htmlFor="cantidad" className="mr-2 text-gray-500 whitespace-nowrap">
-      Cantidad:
-    </label>
-    <select
-      id="cantidad"
-      className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100 w-full sm:w-auto"
-    >
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-    </select>
-  </div>
+              {/* Quantity Selector */}
+              <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
+                <label htmlFor="cantidad" className="mr-2 text-gray-500 whitespace-nowrap">
+                  Cantidad:
+                </label>
+                <select
+                  id="cantidad"
+                  className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100 w-full sm:w-auto"
+                >
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
 
   {/* Sort Selector */}
         <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
@@ -226,11 +226,7 @@ const HomePage: React.FC = () => {
           Mostrando {productos.length > 0 ? `1 - ${productos.length}` : "0"} productos
         </p>
       </div>
-
-
-
             <br />
-
             {/* Renderizar productos */}
             {loading ? (
               <p>Cargando productos...</p>
