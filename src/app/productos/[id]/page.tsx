@@ -267,7 +267,7 @@ const ProductPage = () => {
         </div>
       </div>
       {/* Mostrar las reviews */}
-      <div className="mt-10">
+      <div className="mt-10 ml-[10%]">
         <ProductReviews reviews={reviews} />
       </div>
       <Slider />
