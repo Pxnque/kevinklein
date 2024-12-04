@@ -22,7 +22,12 @@ const ChangePassword = () => {
 
     const existeUsuario = async (email: string) => {
         const buscar = email;
-        const record = await pb.collection('users').getFirstListItem(`email=${buscar}`);
+        console.log(buscar);
+        const record = await pb.collection('users').getFirstListItem(`email="${buscar}"`);
+        console.log(record);
+        const idusuariobuscar = record.id;
+        const record2 = await pb.collection('users').getOne(idusuariobuscar);
+        console.log(record2);
         if (record) {
              userId = record.id;
              oldPassword = record.password;
@@ -67,29 +72,48 @@ const ChangePassword = () => {
         if (hasErrors) {
             return; // Stop if there are validation errors
         }
-    
         try {
-            // Verify user existence and retrieve userId and oldPassword
             const exist = await existeUsuario(email);
             if (!exist) {
                 alert('El correo electrónico no está registrado.');
                 return;
             }
-    
-            // Prepare the data for updating the user's password
-            const data = {
-                password,
-                passwordConfirm: confirmPassword,
-                oldPassword,
-            };
+        } catch (error) {
+            console.log(error);
+        }
+        try {
+            // Verify user existence and retrieve userId and oldPassword
+            const authData = await pb.collection('users').authWithPassword(
+                'bolinhaclassic77@outlook.com',
+                'contraseña',
+            );
+            console.log(authData);
+            console.log("despues de esto es el authstore.record");
+            console.log(pb.authStore.record);
+            console.log(userId);
+            
+            
+            // Prepare the data for updating the user's 
+            const contraseña = password;
+            const confirmarContraseña = confirmPassword;
+            console.log(contraseña, confirmarContraseña);
+           
+            const record = await pb.collection('users').update(userId,{
+                password: contraseña,
+                passwordConfirm: confirmarContraseña,
+            });
     
             // Make the update request to PocketBase
-            const record = await pb.collection('users').update(userId, data);
+            //const record = await pb.collection('users').update(userId, data);
+            if (record) {
+                alert('Contraseña cambiada con éxito.');
+                pb.authStore.clear();
+                router.push('/auth/Login');
+            }
+
     
             // Success feedback
-            alert('Contraseña cambiada con éxito.');
-
-            router.push('/auth/login');
+            
             // Reset form fields
             setEmail('');
             setPassword('');

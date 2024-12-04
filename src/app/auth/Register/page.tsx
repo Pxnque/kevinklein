@@ -4,17 +4,19 @@ import Navbar from "@/app/components/Navbar/Navbar";
 import Footer from "@/app/components/Footer/Footer";
 import PocketBase from "pocketbase";
 import bg from "@/app/public/img/logreg.png";
+import { useRouter } from "next/navigation";
 
 const pb = new PocketBase("https://kevinklein.pockethost.io");
 
 const RegisterPage = () => {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
         username: "",
-        rol: "user", // Default role
+        rol: "usuario", // Default role
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [registerError, setRegisterError] = useState("");
@@ -72,16 +74,11 @@ const RegisterPage = () => {
             const record = await pb.collection("users").create(data);
             console.log("User created:", record); // Debugging: Log the successful creation response
             alert("Registro exitoso. Ahora puedes iniciar sesión.");
+            router.push("/auth/Login"); // Redirect to the login page after successful registration
+            router
             
             // Reset form fields after successful registration
-            setFormData({
-                name: "",
-                email: "",
-                password: "",
-                confirmPassword: "",
-                username: "",
-                rol: "user",
-            });
+            
             setErrors({});
             setRegisterError(""); // Clear any previous errors
         } catch (error: any) {
@@ -91,7 +88,7 @@ const RegisterPage = () => {
             if (error?.data?.data) {
                 const fieldErrors: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(error.data.data)) {
-                    fieldErrors[key] = value.message;
+                    fieldErrors[key] = (value as { message: string }).message;
                 }
                 setErrors(fieldErrors); // Set field-specific errors
             } else if (error?.message) {
