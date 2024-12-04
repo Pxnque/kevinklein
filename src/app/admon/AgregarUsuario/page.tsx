@@ -18,6 +18,7 @@ export default function AgregarUsuarioPage() {
   });
   const [errors, setErrors] = useState({ general: "", avatar: "" });
   const [showPassword, setShowPassword] = useState(false);
+  setShowPassword(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

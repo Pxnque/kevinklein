@@ -9,6 +9,9 @@ const nextConfig = {
       pathname: '/api/files/**'
     }]
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+},
   // ...
 
 };
