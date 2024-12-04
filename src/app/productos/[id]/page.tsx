@@ -76,7 +76,7 @@ const ProductPage = () => {
 
             try {
               // Consulta adicional para obtener información del usuario
-              const user = await pb.collection("users").getOne(review.user_id);
+              const user = await pb.collection("users").getOne(review.user_id, {requestKey: null});
               userDetails = {
                 username: user.name,
                 profile_picture: user.avatar ? pb.files.getURL(user, user.avatar) : null,

@@ -24,7 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
   const router = useRouter();
   const { id, nombre, url, descripcion, precio, descuento } = productData;
   console.log(productData);
-  
+
   const handleAddToCart = () => {
     const existingCart = localStorage.getItem('cart');
     const cartItems = existingCart ? JSON.parse(existingCart) : [];
@@ -53,23 +53,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
 
   // Renderizar estrellas según el rating
   const renderStars = (rating: number) => {
-    const fullStars = Math.floor(rating);
-    const halfStar = rating - fullStars >= 0.5 ? 1 : 0;
-    const emptyStars = 5 - fullStars - halfStar;
+    const fullStars = Math.floor(rating); // Estrellas llenas
+    const halfStar = rating - fullStars >= 0.5 ? 1 : 0; // Estrella a medias
+    const emptyStars = Math.max(5 - fullStars - halfStar, 0); // Asegúrate de que no sea negativo
 
     return (
       <div className="flex items-center space-x-1 text-black mb-4">
-        {Array(fullStars).fill(true).map((_, i) => (
+        {Array.from({ length: fullStars }).map((_, i) => (
           <svg key={`filledStar-${id}-${i}`} className="w-4 h-4 fill-current text-yellow-500" viewBox="0 0 24 24">
             <path d="M12 .587l3.668 7.568L24 9.423l-6 5.847 1.417 8.253L12 18.897l-7.417 4.626L6 15.27 0 9.423l8.332-1.268z" />
           </svg>
         ))}
-        {Array(halfStar).fill(true).map((_, i) => (
+        {Array.from({ length: halfStar }).map((_, i) => (
           <svg key={`halfStar-${id}-${i}`} className="w-4 h-4 fill-current text-yellow-500" viewBox="0 0 24 24">
             <path d="M12 .587l3.668 7.568L24 9.423l-6 5.847 1.417 8.253L12 18.897l-7.417 4.626L6 15.27 0 9.423l8.332-1.268z" />
           </svg>
         ))}
-        {Array(emptyStars).fill(false).map((_, i) => (
+        {Array.from({ length: emptyStars }).map((_, i) => (
           <svg key={`emptyStar-${id}-${i}`} className="w-4 h-4 fill-current text-gray-300" viewBox="0 0 24 24">
             <path d="M12 17.27l6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73-1.64 7.03z" />
           </svg>
@@ -86,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
           alt={nombre}
           fill={true}
           sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
-         
+
           quality={100}
           className="rounded-l-lg"
         />

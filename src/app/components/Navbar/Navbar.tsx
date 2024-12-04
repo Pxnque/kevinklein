@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import { IoPersonOutline, IoSearchSharp, IoCartOutline } from "react-icons/io5";
 import { BsHouse } from "react-icons/bs";
+import { MdOutlineRateReview } from "react-icons/md";
 import PocketBase from 'pocketbase';
 import ImagenLogin from '@/app/public/img/logo.png';
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
@@ -99,7 +100,7 @@ const Navbar = () => {
   };
 
   const baseUrl = 'https://kevinklein.pockethost.io/api/files/users/';
- 
+
   return (
     <header className="bg-black">
       <nav className="flex justify-between items-center w-[92%] mx-auto">
@@ -171,7 +172,7 @@ const Navbar = () => {
                 >
                   <li className='flex flex-wrap hover:bg-gray-200'>
                     <div className='mt-2 ml-2'>
-                    <IoPersonOutline href='/profile' size={24} className="text-black text-center justify-center" />
+                      <IoPersonOutline href='/profile' size={24} className="text-black text-center justify-center" />
                     </div>
                     <Link
                       href="/profile"
@@ -181,9 +182,9 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li className='flex flex-wrap hover:bg-gray-200'>
-                  <div className='mt-2 ml-2'>
-                  <BsHouse href='/configuration' size={24} className="text-black text-center justify-center"/>
-                  </div>
+                    <div className='mt-2 ml-2'>
+                      <BsHouse href='/configuration' size={24} className="text-black text-center justify-center" />
+                    </div>
 
                     <Link
                       href="/configuration"
@@ -192,10 +193,22 @@ const Navbar = () => {
                       Mis direcciones
                     </Link>
                   </li>
+                  <li className='flex flex-wrap hover:bg-gray-200'>
+                    <div className='mt-2 ml-2'>
+                      <MdOutlineRateReview size={24} className="text-black text-center justify-center" />
+                    </div>
+
+                    <Link
+                      href="/reviews"
+                      className="block px-4 pt-3 hover:bg-gray-200"
+                    >
+                      Reviews
+                    </Link>
+                  </li>
                   {userData?.role === 'admin' && (
                     <li className='flex hover:bg-gray-200'>
                       <div className='mt-2 ml-2'>
-                      <MdOutlineAdminPanelSettings href='/admon/Dashboard' size={24} className="text-black text-center justify-center"/>
+                        <MdOutlineAdminPanelSettings href='/admon/Dashboard' size={24} className="text-black text-center justify-center" />
                       </div>
                       <Link
                         href="/admon/Dashboard"
@@ -207,12 +220,12 @@ const Navbar = () => {
                   )}
                   <li className='flex  hover:bg-gray-200 pb-2'>
                     <div className='mt-2 ml-2'>
-                    <PiSignOutFill onClick={() => {
+                      <PiSignOutFill onClick={() => {
                         pb.authStore.clear();
                         setIsLoggedIn(false);
                         setIsDropdownOpen(false);
                         cachedUser = { isAuthenticated: false, data: null };
-                      }} size={24} className="text-black text-center justify-center"/>
+                      }} size={24} className="text-black text-center justify-center" />
                     </div>
                     <button
                       onClick={() => {

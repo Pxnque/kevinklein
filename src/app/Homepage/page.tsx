@@ -9,6 +9,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import Card from "../components/Card/ProductCard";
 import pb from "@/app/lib/pocketbase";
 import Chatbot from "../components/Chatbot/Chatbot";
+
 // Tipo para los productos
 interface Producto {
   id: string;
@@ -24,7 +25,6 @@ interface Categoria {
   id: string;
   nombre: string;
 }
-
 
 const HomePage: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]); // Estado para almacenar los productos con rating
@@ -78,8 +78,10 @@ const HomePage: React.FC = () => {
           if (!ratingsMap[productId]) {
             ratingsMap[productId] = { total: 0, count: 0 };
           }
-          ratingsMap[productId].total += review.rating;
-          ratingsMap[productId].count += 1;
+          ratingsMap[productId].total += +review.rating;
+          ratingsMap[productId].count++;
+          // console.log('count: '+ratingsMap[productId].count);
+          // console.log('total: '+ratingsMap[productId].total);
         });
 
         // Calcular el rating promedio para cada producto
@@ -156,10 +158,10 @@ const HomePage: React.FC = () => {
 
   const sortedProductos = [...filteredProductos].sort((a, b) => {
     if (sortOption === 'price-asc') {
-      return a.precio*(1-a.descuento) - b.precio*(1-b.descuento); // Precio ascendente
+      return a.precio * (1 - a.descuento) - b.precio * (1 - b.descuento); // Precio ascendente
     }
     if (sortOption === 'price-desc') {
-      return b.precio*(1-b.descuento) - a.precio*(1-a.descuento); // Precio descendente
+      return b.precio * (1 - b.descuento) - a.precio * (1 - a.descuento); // Precio descendente
     }
     if (sortOption === 'rating') {
       return b.rating - a.rating; // Mejor calificado
