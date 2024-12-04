@@ -21,6 +21,7 @@ const CheckoutSummary = () => {
   const [items, setItems] = useState<any[]>([]);
   const [subtotal, setSubtotal] = useState<number>(0);
   const [discounts, setDiscounts] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(pb.authStore.isValid);
@@ -48,12 +49,19 @@ const CheckoutSummary = () => {
         (sum: number, item: any) => sum + item.quantity * item.originalPrice,
         0
       );
+   
+
       const calculatedDiscounts = parsedItems.reduce(
         (sum: number, item: any) =>
           sum + item.quantity * (item.originalPrice - item.discountedPrice),
         0
       );
-
+      const calculatedQuantity = parsedItems.reduce(
+        (sum: number, item: any) =>
+          sum + item.quantity,
+        0
+      );
+      setQuantity(calculatedQuantity);
       setSubtotal(calculatedSubtotal);
       setDiscounts(calculatedDiscounts);
     }
@@ -109,17 +117,18 @@ var addressstatic = "";
 
       const data = {
           user_id: pb.authStore.model?.id, // User ID from props
-          product_ids: productIds, // Product IDs from cart items
+          product_id: productIds, // Product IDs from cart items
           shipping_id: addressstatic, // Shipping address ID from props
-          order_status: "En camino", // Fixed status
-          total_price: Number(total.toFixed(2)), // Total price from props
-          payment_status: [], // Payment status can be null as stated
-          order_date: orderDate, // Current date in ISO format
+          //order_status: "En camino", // Fixed status
+          price: Number(total.toFixed(2)), // Total price from props
+          quantity: Number(quantity)
+          //payment_status: [], // Payment status can be null as stated
+          //order_date: orderDate, // Current date in ISO format
       };
       console.log("data del pedido"); // Logs the order data
       console.log(data); // Logs the order data
       try {
-        const record = await pb.collection('orders').create(data);
+        const record = await pb.collection('sales').create(data);
         console.log("Order created successfully:", record);
       } catch (error) {
         if (error instanceof Error) {

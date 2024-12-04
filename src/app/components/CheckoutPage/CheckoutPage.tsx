@@ -64,7 +64,7 @@ const CheckoutPage = ({amount}: {amount:number}) => {
           clientSecret,
           confirmParams: {
             
-              return_url: 'https://www.fragrantica.es/',
+              return_url: 'https://deno-clon-63273e.gitlab.io/purchase.html',
           },
       });
   
