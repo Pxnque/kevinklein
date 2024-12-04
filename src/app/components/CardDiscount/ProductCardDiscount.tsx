@@ -24,7 +24,8 @@ const ProductCardDiscount: React.FC<ProductCardDiscountProps> = ({ productos }) 
   return (
     <div className="flex flex-col space-y-6">
       {productos.map((producto) => (
-        <div key={producto.id} className="flex border rounded-lg overflow-hidden shadow-lg bg-white max-w-sm">
+        <a key={producto.id} href={`productos/${producto.id}`}>
+        <div className="flex border rounded-lg overflow-hidden shadow-lg bg-white max-w-sm">
           {/* Imagen del producto */}
           <div className="w-1/3 relative">
             <Image
@@ -48,6 +49,7 @@ const ProductCardDiscount: React.FC<ProductCardDiscountProps> = ({ productos }) 
             </div>
           </div>
         </div>
+        </a>
       ))}
     </div>
   );
