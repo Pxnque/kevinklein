@@ -1,22 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Image from "next/image";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import Chatbot from "../components/Chatbot/Chatbot";
 import PocketBase from "pocketbase";
+import { useRouter } from "next/navigation";
 
 const pb = new PocketBase("https://kevinklein.pockethost.io");
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [isEditingUser, setIsEditingUser] = useState(false);
+  const router = useRouter();
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isLogged = await pb.authStore.isValid;
+      if (!isLogged) {
+        router.push('/auth/Login');
+      }
+    };
+
+    checkAuth();
+  }, [router]);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userResponse = await pb.authStore.model;
+        
         setUser(userResponse);
       } catch (error) {
         console.error("Error fetching user data:", error);
