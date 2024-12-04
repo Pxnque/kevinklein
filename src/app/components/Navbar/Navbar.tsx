@@ -8,6 +8,7 @@ import PocketBase from 'pocketbase';
 import ImagenLogin from '@/app/public/img/logo.png';
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { PiSignOutFill } from "react-icons/pi";
+import { ShoppingBasket } from 'lucide-react';
 
 
 
@@ -191,7 +192,24 @@ const Navbar = () => {
                     >
                       Mis direcciones
                     </Link>
+
+                    
                   </li>
+                  <li className='flex flex-wrap hover:bg-gray-200'>
+                  <div className='mt-2 ml-2'>
+                  <ShoppingBasket href='/Orders' size={24} className="text-black text-center justify-center"/>
+                  </div>
+
+                    <Link
+                      href="/Orders"
+                      className="block px-4 pt-3 hover:bg-gray-200"
+                    >
+                      Mis Pedidos
+                    </Link>
+
+                    
+                  </li>
+                  
                   {userData?.role === 'admin' && (
                     <li className='flex hover:bg-gray-200'>
                       <div className='mt-2 ml-2'>
