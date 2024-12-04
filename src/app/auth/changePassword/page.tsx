@@ -90,6 +90,7 @@ const ChangePassword = () => {
             console.log(authData);
             console.log("despues de esto es el authstore.record");
             console.log(pb.authStore.record);
+            
             console.log(userId);
             
             
@@ -100,7 +101,7 @@ const ChangePassword = () => {
            
             const record = await pb.collection('users').update(userId,{
                 password: contraseña,
-                passwordConfirm: confirmarContraseña,
+                
             });
     
             // Make the update request to PocketBase
