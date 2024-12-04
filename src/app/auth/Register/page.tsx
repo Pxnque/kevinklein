@@ -53,25 +53,55 @@ const RegisterPage = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
-
+    
+        // Prepare the data to be sent
         const data = {
             username: formData.username,
             email: formData.email,
-            emailVisibility: true,
+            emailVisibility: true, // PocketBase requires this field for email visibility
             password: formData.password,
             passwordConfirm: formData.confirmPassword,
             name: formData.name,
-            rol: formData.rol,
+            rol: formData.rol, // Ensure this field exists in your PocketBase schema
         };
-
+    
+        console.log("Data to be sent:", data); // Debugging: Log data being sent
+    
         try {
-            await pb.collection("users").create(data);
+            // Attempt to create a new user in the PocketBase `users` collection
+            const record = await pb.collection("users").create(data);
+            console.log("User created:", record); // Debugging: Log the successful creation response
             alert("Registro exitoso. Ahora puedes iniciar sesión.");
+            
+            // Reset form fields after successful registration
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                username: "",
+                rol: "user",
+            });
+            setErrors({});
+            setRegisterError(""); // Clear any previous errors
         } catch (error: any) {
-            setRegisterError("Error al registrar usuario. Verifica los datos ingresados.");
+            console.error("Error creating user:", error); // Debugging: Log the error
+    
+            // Handle specific error cases if available
+            if (error?.data?.data) {
+                const fieldErrors: { [key: string]: string } = {};
+                for (const [key, value] of Object.entries(error.data.data)) {
+                    fieldErrors[key] = value.message;
+                }
+                setErrors(fieldErrors); // Set field-specific errors
+            } else if (error?.message) {
+                setRegisterError(error.message); // Display generic error message
+            } else {
+                setRegisterError("Error al registrar usuario. Verifica los datos ingresados.");
+            }
         }
     };
-
+    
     return (
         <>
             <div className="bg-black">
