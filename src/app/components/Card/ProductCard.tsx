@@ -72,11 +72,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, rating = 0 }) =>
             <path d="M12 .587l3.668 7.568L24 9.423l-6 5.847 1.417 8.253L12 18.897l-7.417 4.626L6 15.27 0 9.423l8.332-1.268z" />
           </svg>
         ))}
-        {Array(emptyStars).fill(false).map((_, i) => (
-          <svg key={`emptyStar-${id}-${i}`} className="w-4 h-4 fill-current text-gray-300" viewBox="0 0 24 24">
-            <path d="M12 17.27l6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73-1.64 7.03z" />
-          </svg>
-        ))}
+        {Array.isArray(emptyStars) && Array(emptyStars).fill(false).map((_, i) => (
+  <svg key={`emptyStar-${id}-${i}`} className="w-4 h-4 fill-current text-gray-300" viewBox="0 0 24 24">
+    <path d="M12 17.27l6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73-1.64 7.03z" />
+  </svg>
+))}
+
       </div>
     );
   };
