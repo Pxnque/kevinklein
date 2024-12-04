@@ -186,7 +186,7 @@ const Navbar = () => {
                   </div>
 
                     <Link
-                      href="/configuration"
+                      href="/Direcciones"
                       className="block px-4 pt-3 hover:bg-gray-200"
                     >
                       Mis direcciones
