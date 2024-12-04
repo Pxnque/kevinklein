@@ -26,6 +26,7 @@ const CheckoutSummary = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(pb.authStore.isValid);
   const [shippingAddresses, setShippingAddresses] = useState<any[]>([]);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
   const shipping = "Calcular";
 
@@ -33,7 +34,7 @@ const CheckoutSummary = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  var itemscarrito = localStorage.getItem("cart");
   // Load cart data and calculate subtotal and discounts
   useEffect(() => {
     if (!isMounted || !isLoggedIn) return;
@@ -57,35 +58,84 @@ const CheckoutSummary = () => {
       setDiscounts(calculatedDiscounts);
     }
   }, [isMounted, isLoggedIn]);
-
+var addressstatic = "";
   // Fetch shipping addresses
   useEffect(() => {
     const fetchAddresses = async () => {
       if (!isMounted || !isLoggedIn) return;
-
+  
       try {
         const records = await pb.collection("shippingaddresses").getFullList({
           filter: `id_user="${pb.authStore.model?.id}"`,
         });
-        setShippingAddresses(records);
+        
+        console.log(records); // Logs the fetched addresses
+        //console.log(address1.collectionId)
+        setShippingAddresses(records); // Set the fetched data to state
       } catch (error) {
         console.error("Error fetching shipping addresses:", error);
       } finally {
         setIsLoadingAddresses(false);
       }
     };
-
+  
     fetchAddresses();
   }, [isMounted, isLoggedIn]);
 
   const total = subtotal - discounts;
+  const handleAddressChange = (id: string) => {
+    setSelectedAddressId(id);
+  };
 
   const handleCheckout = async () => {
     if (!isLoggedIn) {
-      alert("You should log in to buy.");
+      alert("Para poder comprar necesita estar logeado.");
       router.push("/auth/Login");
       return;
     }
+    try {
+      const productIds: string[] = itemscarrito 
+  ? JSON.parse(itemscarrito).map((item: any) => item.id) 
+  : []; // Extract product IDs from items
+      const orderDate = new Date().toISOString(); // Get current timestamp
+      console.log("id de los productos del carrito"); // Logs the product IDs
+      console.log(productIds); // Logs the product IDs
+      const records = await pb.collection("shippingaddresses").getFullList({
+        filter: `id_user="${pb.authStore.model?.id}"`,
+      });
+      const address1 = records[0];
+        addressstatic = address1.id;
+
+
+      const data = {
+          user_id: pb.authStore.model?.id, // User ID from props
+          product_ids: productIds, // Product IDs from cart items
+          shipping_id: addressstatic, // Shipping address ID from props
+          order_status: "En camino", // Fixed status
+          total_price: Number(total.toFixed(2)), // Total price from props
+          payment_status: [], // Payment status can be null as stated
+          order_date: orderDate, // Current date in ISO format
+      };
+      console.log("data del pedido"); // Logs the order data
+      console.log(data); // Logs the order data
+      try {
+        const record = await pb.collection('orders').create(data);
+        console.log("Order created successfully:", record);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("Error creating order:", error.message);
+        } else {
+          console.error("Error creating order:", error);
+        }
+      }
+
+      // Optionally clear the cart
+      
+
+     
+  } catch (createError) {
+      console.error("Error creating order:", createError);
+  }
 
     setIsTransitioning(true);
 
@@ -177,44 +227,35 @@ const CheckoutSummary = () => {
         <div className="text-center flex lg:flex-row flex-col w-full lg:w-full" id="shipping">
           <div>
             <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Direcciones de envío:
-              </h3>
+            <h3 className="text-lg font-semibold mb-4">Direcciones de envío:</h3>
               {isLoadingAddresses ? (
                 <p>Cargando direcciones...</p>
               ) : shippingAddresses.length > 0 ? (
                 <div className="space-y-4">
                   {shippingAddresses.map((address, index) => (
                     <div
-                      key={index}
+                      key={address.id || index} // Use a unique key (fallback to index if id is missing)
                       className="flex items-start p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-lg transition-shadow"
                     >
                       <input
                         type="radio"
                         name="selectedAddress"
                         id={`address-${index}`}
+                        onChange={() => handleAddressChange(address.id)}
                         className="mt-1 mr-3"
                       />
-                      <label
-                        htmlFor={`address-${index}`}
-                        className="flex-grow text-left"
-                      >
-                        <p className="font-medium text-lg">
-                          {address.nombre_direccion}
-                        </p>
+                      <label htmlFor={`address-${index}`} className="flex-grow text-left">
+                        <p className="font-medium text-lg">{address.nombre_direccion || "Sin nombre"}</p>
                         <p className="text-gray-500">
-                          {address.direccion}, {address.ciudad},{" "}
-                          {address.estado}, {address.pais},{" "}
-                          {address.codigo_postal}
+                          {address.direccion || "Sin dirección"}, {address.ciudad || "Sin ciudad"}, {address.estado || "Sin estado"}, {address.pais || "Sin país"}, {address.codigo_postal || "Sin código postal"}
                         </p>
+
                       </label>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500">
-                  No se encontraron direcciones de envío.
-                </p>
+                <p className="text-gray-500">No se encontraron direcciones de envío.</p>
               )}
             </div>
           </div>
@@ -232,7 +273,7 @@ const CheckoutSummary = () => {
                   currency: "mxn",
                 }}
               >
-                <CheckoutPage amount={Number(total.toFixed(2))} />
+                <CheckoutPage  amount={Number(total.toFixed(2))}/>
               </Elements>
             </div>
           </div>

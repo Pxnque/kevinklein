@@ -1,5 +1,6 @@
 'use client'
 import React,{useEffect,useState} from 'react';
+import PocketBase from 'pocketbase';
 import {
     useStripe,
     useElements,
@@ -7,11 +8,27 @@ import {
 } from '@stripe/react-stripe-js';
 import convertToSubcurrency from '@/app/lib/convertToSubcurrency';
 const CheckoutPage = ({amount}: {amount:number}) => {
+    const pb = new PocketBase('https://kevinklein.pockethost.io');
     const stripe = useStripe();
     const elements = useElements();
     const [errorMesaage,setErrorMessage] = useState<string>();
     const [clientSecret,setClientSecret] = useState("");
     const [loading,setLoading] = useState(false);
+    const [items, setItems] = useState<any[]>([]); // State for cart items
+
+  // Load cart data from localStorage
+  useEffect(() => {
+    const cartItems = localStorage.getItem("cart");
+    if (cartItems) {
+      setItems(JSON.parse(cartItems));
+    }
+  }, []);
+
+  // Save updated cart in localStorage
+  const updateCart = (updatedItems: any[]) => {
+    setItems(updatedItems);
+    localStorage.setItem("cart", JSON.stringify(updatedItems));
+  };
 
     useEffect(() => {
         fetch('/api/create-payment-intent',{
@@ -28,34 +45,40 @@ const CheckoutPage = ({amount}: {amount:number}) => {
     },[amount]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setLoading(true);
-        if(!stripe || !elements){
-            return;
-        }
-        const {error: submitError } = await elements.submit();
-        if(submitError){
-            setErrorMessage(submitError.message);
-            setLoading(false);
-            return;
-        }
-       const {error} = await stripe.confirmPayment({
-        elements,
-        clientSecret,
-        confirmParams: {
-            return_url: `http:localhost:3000/payment-success?amount=${amount}`,
-       },
-    });
-
-    if(error){
-        setErrorMessage(error.message);
-        console.log(error);
-    }else{
-        //el ui se cierra y muestra animacion
-        //se redirige a la pagina de exito return_url
-    }
-    setLoading(false);
-    };
+      event.preventDefault();
+      setLoading(true);
+      
+      if (!stripe || !elements) {
+          return;
+      }
+      localStorage.removeItem('cart');
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+          setErrorMessage(submitError.message);
+          setLoading(false);
+          return;
+      }
+      //`http://localhost:3000/payment-success?amount=${amount}`
+      const { error } = await stripe.confirmPayment({
+          elements,
+          clientSecret,
+          confirmParams: {
+            
+              return_url: 'https://www.fragrantica.es/',
+          },
+      });
+  
+      if (error) {
+          setErrorMessage(error.message);
+          console.log(error);
+      } else {
+        
+          // After successful payment, create the order in PocketBase
+          
+      }
+      setLoading(false);
+  };
+  
     if (!clientSecret || !stripe || !elements) {
         return (
           <div className="flex items-center justify-center">

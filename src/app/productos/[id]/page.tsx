@@ -154,6 +154,7 @@ const ProductPage = () => {
     } else {
       // Agregar nuevo producto
       const newItem = {
+        id: product.id,
         product: product.nombre,
         img: `https://kevinklein.pockethost.io/api/files/productos/${product.id}/${product.fotos[0]}`,
         shipping: 'a calcular',

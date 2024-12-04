@@ -134,7 +134,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link href="/preguntar-frecuentes" className="hover:text-gray-200">
-                NOSOTROS
+                FAQ
               </Link>
             </li>
           </ul>
