@@ -2,21 +2,18 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
-import Image from "next/image";
-import gridIcon from "../Img/Grid.png";
-import listIcon from "../Img/list.png";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Card from "../components/Card/ProductCard";
 import pb from "@/app/lib/pocketbase";
 import Chatbot from "../components/Chatbot/Chatbot";
-// Tipo para los productos
+
 interface Producto {
   id: string;
   nombre: string;
   url: string;
   precio: number;
   descuento: number;
-  rating: number; // rating promedio
+  rating: number;
   categoriaId: string;
 }
 
@@ -25,39 +22,36 @@ interface Categoria {
   nombre: string;
 }
 
-
 const HomePage: React.FC = () => {
-  const [productos, setProductos] = useState<Producto[]>([]); // Estado para almacenar los productos con rating
-  const [categorias, setCategorias] = useState<Categoria[]>([]); // Todas las categorías
-  const [filteredProductos, setFilteredProductos] = useState<Producto[]>([]); // Productos filtrados
-  const [loading, setLoading] = useState<boolean>(true); // Estado para controlar el indicador de carga
-  const [searchTerm, setSearchTerm] = useState<string>(''); // Término de búsqueda
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Categorías seleccionadas
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]); // Rangos de precio seleccionados
-  const [selectedRating, setSelectedRating] = useState<number | null>(null); // Calificación seleccionada
-  const [sortOption, setSortOption] = useState<string>('default'); // Estado para la opción de orden
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [filteredProductos, setFilteredProductos] = useState<Producto[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [sortOption, setSortOption] = useState<string>('default');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(25);
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term); // Actualiza el término de búsqueda
-    handleFilterChange(selectedCategories, selectedPriceRanges, selectedRating); // Refiltra los productos
+    setSearchTerm(term);
+    handleFilterChange(selectedCategories, selectedPriceRanges, selectedRating);
   };
 
-  // Función para mostrar productos populares
   const handleShowPopular = () => {
-    // Seleccionar 6 productos aleatorios
     const randomProductos = productos.sort(() => 0.5 - Math.random()).slice(0, 6);
     setFilteredProductos(randomProductos);
-    // Limpiar todos los filtros
     setSelectedCategories([]);
     setSelectedPriceRanges([]);
     setSelectedRating(null);
+    setCurrentPage(1);
   };
 
-  // Consultar productos y ratings
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener productos
         const productosData = await pb.collection("productos").getFullList(200, { requestKey: null });
         const formattedProductos = productosData.map((producto: any) => ({
           id: producto.id,
@@ -69,7 +63,6 @@ const HomePage: React.FC = () => {
           categoriaId: producto.id_categoria,
         }));
 
-        // Obtener ratings para cada producto
         const reviewsData = await pb.collection("product_reviews").getFullList(200, { requestKey: null });
         const ratingsMap: Record<string, { total: number; count: number }> = {};
 
@@ -82,7 +75,6 @@ const HomePage: React.FC = () => {
           ratingsMap[productId].count += 1;
         });
 
-        // Calcular el rating promedio para cada producto
         const productosConRatings = formattedProductos.map((producto) => ({
           ...producto,
           rating: ratingsMap[producto.id]
@@ -91,14 +83,13 @@ const HomePage: React.FC = () => {
         }));
         setProductos(productosConRatings);
 
-        // Obtener categorías
         const categoriasData = await pb.collection('categorias').getFullList(200, { requestKey: null });
         const formattedCategorias = categoriasData.map((categoria: any) => ({
           id: categoria.id,
           nombre: categoria.nombre,
         }));
         setCategorias(formattedCategorias);
-        setFilteredProductos(productosConRatings); // Mostrar todos inicialmente
+        setFilteredProductos(productosConRatings);
 
       } catch (error) {
         console.error("Error al obtener los datos:", error);
@@ -110,23 +101,22 @@ const HomePage: React.FC = () => {
     fetchData();
   }, []);
 
-  // Manejar filtros
   const handleFilterChange = (categories: string[], priceRanges: string[], rating: number | null) => {
-    setSelectedCategories(categories); // Actualiza las categorías seleccionadas
-    setSelectedPriceRanges(priceRanges); // Actualiza los rangos de precio seleccionados
-    setSelectedRating(rating); // Actualiza la calificación seleccionada  
+    setSelectedCategories(categories);
+    setSelectedPriceRanges(priceRanges);
+    setSelectedRating(rating);
+    setCurrentPage(1); // Reset to first page when filters change
 
     const filteredByCategory =
       categories.length === 0
         ? productos
         : productos.filter((producto) => categories.includes(producto.categoriaId));
 
-    // Filtrar por precio (solo si se seleccionan rangos de precios)
     const filteredByPrice =
       priceRanges.length === 0
-        ? filteredByCategory // Si no hay rangos de precios seleccionados, mantener todos los productos de categoría
+        ? filteredByCategory
         : filteredByCategory.filter((producto) => {
-          const realPrice = (producto.precio * (1 - producto.descuento));
+          const realPrice = producto.precio * (1 - producto.descuento);
           if (priceRanges.includes('menos100') && realPrice < 100) return true;
           if (priceRanges.includes('100-250') && realPrice >= 100 && realPrice <= 250) return true;
           if (priceRanges.includes('250-350') && realPrice >= 250 && realPrice <= 350) return true;
@@ -134,13 +124,11 @@ const HomePage: React.FC = () => {
           return false;
         });
 
-    // Filtrar por calificación
     const filteredByRating =
       rating === null
         ? filteredByPrice
         : filteredByPrice.filter((producto) => Math.floor(producto.rating) === rating);
 
-    // Filtrar por término de búsqueda
     const filteredBySearch = searchTerm
       ? filteredByRating.filter((producto) =>
         producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -150,22 +138,38 @@ const HomePage: React.FC = () => {
     setFilteredProductos(filteredBySearch);
   };
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOption(e.target.value); // Actualiza la opción seleccionada
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
+  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // Apply sorting
   const sortedProductos = [...filteredProductos].sort((a, b) => {
     if (sortOption === 'price-asc') {
-      return a.precio*(1-a.descuento) - b.precio*(1-b.descuento); // Precio ascendente
+      return a.precio * (1 - a.descuento) - b.precio * (1 - b.descuento);
     }
     if (sortOption === 'price-desc') {
-      return b.precio*(1-b.descuento) - a.precio*(1-a.descuento); // Precio descendente
+      return b.precio * (1 - b.descuento) - a.precio * (1 - a.descuento);
     }
     if (sortOption === 'rating') {
-      return b.rating - a.rating; // Mejor calificado
+      return b.rating - a.rating;
     }
-    return 0; // Default: no ordenar
+    return 0;
   });
+
+  // Calculate pagination indices
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = sortedProductos.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -173,20 +177,21 @@ const HomePage: React.FC = () => {
       <main className="flex-grow py-10 px-4 bg-gray-100">
         <div className="flex">
           <aside className="w-1/4 p-4">
-            {/* Pasar el arreglo completo de productos al Sidebar */}
             {loading ? (
               <p>Cargando Sidebar...</p>
             ) : (
-              <Sidebar productos={productos} categorias={categorias}
+              <Sidebar
+                productos={productos}
+                categorias={categorias}
                 onFilterChange={(categories, priceRanges, rating) =>
-                  handleFilterChange(categories, priceRanges, rating)}
-                onShowPopular={handleShowPopular} // Pasar función de "Populares"
+                  handleFilterChange(categories, priceRanges, rating)
+                }
+                onShowPopular={handleShowPopular}
                 onSearch={handleSearch}
               />
             )}
           </aside>
           <section className="w-3/4 p-4">
-            {/* Barra de cantidad, orden y vista */}
             <div className="flex flex-wrap justify-between items-center p-4 bg-white shadow-md mb-6 gap-4 sm:gap-6">
               {/* Quantity Selector */}
               <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
@@ -196,51 +201,71 @@ const HomePage: React.FC = () => {
                 <select
                   id="cantidad"
                   className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100 w-full sm:w-auto"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
                 >
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
                 </select>
               </div>
 
-  {/* Sort Selector */}
-        <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
-          <label htmlFor="ordenar" className="mr-2 text-gray-500 whitespace-nowrap">
-            Ordenar por:
-          </label>
-          <select
-            id="ordenar"
-            className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100 w-full sm:w-auto"
-            value={sortOption}
-            onChange={handleSortChange}
-          >
-            <option value="default">Default</option>
-            <option value="price-asc">Precio (ascendente)</option>
-            <option value="price-desc">Precio (descendente)</option>
-            <option value="rating">Mejor calificado</option>
-          </select>
-        </div>
+              {/* Sort Selector */}
+              <div className="flex items-center w-full sm:w-auto sm:flex-shrink-0">
+                <label htmlFor="ordenar" className="mr-2 text-gray-500 whitespace-nowrap">
+                  Ordenar por:
+                </label>
+                <select
+                  id="ordenar"
+                  className="border border-gray-300 p-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md bg-gray-100 w-full sm:w-auto"
+                  value={sortOption}
+                  onChange={handleSortChange}
+                >
+                  <option value="default">Default</option>
+                  <option value="price-asc">Precio (ascendente)</option>
+                  <option value="price-desc">Precio (descendente)</option>
+                  <option value="rating">Mejor calificado</option>
+                </select>
+              </div>
 
-        {/* Product Count */}
-        <p className="text-gray-500 w-full sm:w-auto text-center sm:text-right">
-          Mostrando {productos.length > 0 ? `1 - ${productos.length}` : "0"} productos
-        </p>
-      </div>
+              {/* Product Count */}
+              <p className="text-gray-500 w-full sm:w-auto text-center sm:text-right">
+                Mostrando {filteredProductos.length > 0 ? `${indexOfFirstProduct + 1} - ${Math.min(indexOfLastProduct, filteredProductos.length)} de ${filteredProductos.length}` : "0"} productos
+              </p>
+            </div>
             <br />
-            {/* Renderizar productos */}
+            {/* Render products */}
             {loading ? (
               <p>Cargando productos...</p>
-            ) : sortedProductos.length > 0 ? (
+            ) : currentProducts.length > 0 ? (
               <div className="grid 2xl:grid-cols-2 lg:grid-cols-1 gap-6">
-                {sortedProductos.map((producto) => (
-                  <a href={`/productos/${producto.id}`} className="hover:scale-105 transition duration-500">
-                    <Card key={producto.id} productData={producto} rating={producto.rating} />
+                {currentProducts.map((producto) => (
+                  <a key={producto.id} href={`/productos/${producto.id}`} className="hover:scale-105 transition duration-500">
+                    <Card productData={producto} rating={producto.rating} />
                   </a>
                 ))}
               </div>
             ) : (
               <p>No hay productos disponibles.</p>
             )}
+            {/* Pagination Controls */}
+            <div className="mt-6 flex justify-center items-center space-x-4">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2 bg-gray-200 rounded-md"
+              >
+                Anterior
+              </button>
+              <p>Página {currentPage} de {Math.ceil(filteredProductos.length / itemsPerPage)}</p>
+              <button
+                disabled={currentPage === Math.ceil(filteredProductos.length / itemsPerPage)}
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 bg-gray-200 rounded-md"
+              >
+                Siguiente
+              </button>
+            </div>
           </section>
         </div>
       </main>
