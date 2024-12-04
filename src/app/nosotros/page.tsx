@@ -1,7 +1,7 @@
 "use client";
 //import React, { useState } from "react";
 import Image from "next/image";
-//import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import Chatbot from "../components/Chatbot/Chatbot";
 import Link from "next/link";
@@ -13,7 +13,9 @@ import P4 from "@/app/public/img/p4.png";
 const nosotrosPage = () => {
   return (
     <div className="bg-slate-50 text-black">
-      <div className="bg-black ">{/*} <Navbar />*/}</div>
+      <div className="bg-black ">
+        <Navbar />
+      </div>
 
       <section
         className="mb-15  px-4 py-10  text-white text-justify bg-fixed bg-center bg-no-repeat bg-cover
