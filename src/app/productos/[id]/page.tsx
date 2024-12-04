@@ -20,7 +20,7 @@ interface Product {
   descuento: number;
   fotos: string[];
   tallas: string[];
-  cantidad: number;  // Asegúrate de que 'cantidad' es parte de la respuesta
+  cantidad: number;
   id_categoria: string;
   expand: {
     id_categoria: {
@@ -47,7 +47,6 @@ const ProductPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>(0); // Track selected thumbnail
   const [selectedTalla, setSelectedTalla] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState<number>(1); // Estado para manejar la cantidad seleccionada
 
   const conDescuento = product ? product.precio * (1 - product.descuento) : 0;
 
@@ -56,9 +55,12 @@ const ProductPage = () => {
       const pb = new PocketBase("https://kevinklein.pockethost.io");
       try {
         setLoading(true);
-        const record = await pb.collection("productos").getOne<Product>(params.id, {
-          expand: "id_categoria",
-        });
+        const record = await pb.collection("productos").getOne<Product>(
+          params.id,
+          {
+            expand: "id_categoria",
+          }
+        );
         setProduct(record);
         console.log(record);
 
@@ -95,6 +97,7 @@ const ProductPage = () => {
         );
 
         setReviews(reviewsWithUserDetails);
+
       } catch (err) {
         console.error("Error fetching product:", err);
         setError("Failed to fetch product data. Please try again later.");
@@ -109,6 +112,7 @@ const ProductPage = () => {
   }, [params.id]);
 
   if (loading) {
+
     return <><div className="bg-black"><Navbar /></div><div className="min-h-screen flex items-center justify-center">Loading...</div></>;
   }
 
@@ -138,19 +142,15 @@ const ProductPage = () => {
     setSelectedPhotoIndex(index); // Update selected photo index
   };
 
+  const router = useRouter();
   const handleAddToCart = () => {
-    if (quantity > product.cantidad) {
-      alert("No puedes agregar más de la cantidad disponible.");
-      return;
-    }
-
     const existingCart = localStorage.getItem('cart');
     const cartItems = existingCart ? JSON.parse(existingCart) : [];
     const productIndex = cartItems.findIndex((item: any) => item.product === product.nombre);
 
     if (productIndex >= 0) {
       // Incrementar cantidad y recalcular total
-      cartItems[productIndex].quantity += quantity;
+      cartItems[productIndex].quantity += 1;
     } else {
       // Agregar nuevo producto
       const newItem = {
@@ -159,19 +159,14 @@ const ProductPage = () => {
         img: `https://kevinklein.pockethost.io/api/files/productos/${product.id}/${product.fotos[0]}`,
         shipping: 'a calcular',
         originalPrice: product.precio,
-        discountedPrice: conDescuento,
-        quantity: quantity,
+        discountedPrice: product.precio * (1 - product.descuento),
+        quantity: document.querySelector('#quantity') ? document.querySelector('#quantity').value : 1,
       };
       cartItems.push(newItem);
     }
 
     localStorage.setItem('cart', JSON.stringify(cartItems));
     router.push('/ShoppingCart');
-  };
-
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuantity = Math.min(Number(e.target.value), product.cantidad); // Limitar la cantidad a la disponible
-    setQuantity(newQuantity);
   };
 
   return (
@@ -226,9 +221,8 @@ const ProductPage = () => {
                 <button
                   key={index}
                   onClick={() => setSelectedTalla(talla)}
-                  className={`w-10 h-10 flex items-center justify-center border rounded-full ${
-                    selectedTalla === talla ? "bg-black text-white" : "bg-gray-200"
-                  }`}
+                  className={`w-10 h-10 flex items-center justify-center border border-gray-300 ${selectedTalla === talla ? "bg-blue-500 text-white" : ""
+                    }`}
                 >
                   {talla}
                 </button>
@@ -236,35 +230,46 @@ const ProductPage = () => {
             </div>
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="quantity" className="block text-gray-700">Cantidad:</label>
+          <div className="flex items-center space-x-4 mb-6">
+            <label htmlFor="quantity" className="font-semibold text-gray-700 mt-3">
+              Cantidad:
+            </label>
             <input
-              id="quantity"
               type="number"
-              value={quantity}
+              id="quantity"
+              name="quantity"
               min="1"
-              max={product.cantidad} // Limitar el input a la cantidad disponible
-              onChange={handleQuantityChange}
-              className="border rounded-lg p-2 w-16"
+              max={product.cantidad} // Limita según el stock disponible
+              defaultValue="1"
+              className="w-16 border border-gray-300 rounded-md p-2 text-center"
             />
-            <p className="text-gray-500">Cantidad disponible: {product.cantidad}</p>
+            <button className="bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-900"
+              onClick={handleAddToCart}
+            >
+              AGREGAR AL CARRITO
+            </button>
+            {/* <button className="w-10 h-10 flex items-center justify-center border border-gray-200 hover:bg-gray-200 bg-white rounded-md">
+              <FaHeart className="h-6 w-6 text-gray-400" />
+            </button> */}
           </div>
 
-          <div className="flex space-x-4">
-            <button
-              onClick={handleAddToCart}
-              className="bg-black text-white py-2 px-4 rounded-md"
-            >
-              Agregar al carrito
-            </button>
-            <button className="text-black py-2 px-4 rounded-md">
-              
-            </button>
+          <div className="text-sm text-black mb-6">
+            <p className="py-1">
+              <strong className="text-[#A5A5A5] font-normal">SKU:</strong> {product.id}
+            </p>
+            <p className="py-1">
+              <strong className="text-[#A5A5A5] font-normal">Categoría:</strong> {product.expand.id_categoria.nombre}
+            </p>
+            <p className="py-1">
+              <strong className="text-[#A5A5A5] font-normal">Tags:</strong> {product.expand.id_categoria.gender}
+            </p>
           </div>
         </div>
       </div>
-
-      <ProductReviews reviews={reviews} />
+      {/* Mostrar las reviews */}
+      <div className="mt-10">
+        <ProductReviews reviews={reviews} />
+      </div>
       <Slider />
       <Chatbot />
       <Footer />
