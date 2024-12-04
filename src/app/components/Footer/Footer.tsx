@@ -32,19 +32,19 @@ const Footer = () => {
         <MdMailOutline/> <a href="mailto:hello@kelvinklein.com" className="ml-2 hover:text-gray-400">hello@kelvinklein.com</a>
       </p>
       <div className="flex space-x-4">
-        <a href="#" className="hover:text-gray-400">
+        <a href="https://www.facebook.com/search/top?q=calvin%20klein&locale=es_LA" className="hover:text-gray-400">
             <FaFacebook/>
         </a>
-        <a href="#" className="hover:text-gray-400">
+        <a href="https://x.com/CalvinKlein" className="hover:text-gray-400">
           <FaXTwitter/>
         </a>
-        <a href="#" className="hover:text-gray-400">
+        <a href="https://www.instagram.com/calvinklein/" className="hover:text-gray-400">
           <FaInstagram/>
         </a>
-        <a href="#" className="hover:text-gray-400">
+        <a href="https://www.linkedin.com/company/calvin-klein/" className="hover:text-gray-400">
           <FaLinkedinIn/>
         </a>
-        <a href="#" className="hover:text-gray-400">
+        <a href="https://mx.pinterest.com/search/pins/?rs=ac&len=2&q=calvin%20klein&eq=cALVI&etslf=4064" className="hover:text-gray-400">
           <FaPinterestP/>
         </a>
       </div>
@@ -54,9 +54,9 @@ const Footer = () => {
     <div className="w-full sm:w-1/2 md:w-1/4 mb-8 border-r border-gray-700">
       <h3 className="text-xl font-bold mb-4 border-b border-gray-700">Links</h3>
       <ul className="space-y-2 pl-6">
-        <li><a href="#" className="hover:text-gray-400 font-bold">Nosotros</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">¡Compra Ahora!</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">FAQ's</a></li>
+        <li><a href="/nosotros" className="hover:text-gray-400 font-bold">Nosotros</a></li>
+        <li><a href="/Homepage" className="hover:text-gray-400 font-bold">¡Compra Ahora!</a></li>
+        <li><a href="/preguntar-frecuentes" className="hover:text-gray-400 font-bold">FAQ's</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Contáctanos</a></li>
         <li><a href="#" className="hover:text-gray-400 font-bold">Servicio al Cliente</a></li>
       </ul>
@@ -66,11 +66,11 @@ const Footer = () => {
     <div className="w-full sm:w-1/2 md:w-1/4 mb-8 border-r border-gray-700 ">
       <h3 className="text-xl font-bold mb-4 border-b border-gray-700">Servicio Al Cliente</h3>
       <ul className="space-y-2 pl-6">
-        <li><a href="#" className="hover:text-gray-400 font-bold">Mi Cuenta</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">Carrito</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">FAQ's</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">Seguimiento de Orden</a></li>
-        <li><a href="#" className="hover:text-gray-400 font-bold">Ayuda & Soporte</a></li>
+        <li><a href="/profile" className="hover:text-gray-400 font-bold">Mi Cuenta</a></li>
+        <li><a href="/ShoppingCart" className="hover:text-gray-400 font-bold">Carrito</a></li>
+        <li><a href="/preguntar-frecuentes" className="hover:text-gray-400 font-bold">FAQ's</a></li>
+        <li><a href="/Orders" className="hover:text-gray-400 font-bold">Seguimiento de Orden</a></li>
+        <li><a href="/Chatbot" className="hover:text-gray-400 font-bold">Ayuda & Soporte</a></li>
       </ul>
     </div>
 
